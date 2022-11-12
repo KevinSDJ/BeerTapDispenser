@@ -1,10 +1,10 @@
-package com.api.Beerdispenser;
+package com.api.beerdispenser;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class BeerdispenserApplicationTests {
+class BeerDispenserApplicationTests {
 
 	@Test
 	void contextLoads() {

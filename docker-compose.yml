@@ -1,35 +1,26 @@
 version: '3.9'
 
 services:
-    java-skeleton-api:
-        container_name: java-skeleton-api
-        image: gradle:latest # this is due to some Mac M1 issues with Docker :_
+    app:
+        container_name: app
+        build:
+            context: .
         depends_on:
-            -   postgres-skeleton-db
-        volumes:
-            -   "${PWD}:/home/gradle/project"
-            -   "rv-gradle-cache:/home/gradle/.gradle"
-        working_dir: "/home/gradle/project"
+            - db
+        environment:
+            - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/appdb
+            - SPRING_DATASOURCE_USERNAME=test
+            - SPRING_DATASOURCE_PASSWORD=testpassw
+            - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+            - SPRING_JPA_SHOW_SQL=true
         ports:
-            -   "8080:8080"
-        networks:
-            internal-net:
+            - "8080:8080"
 
-    postgres-skeleton-db:
-        container_name: postgres-skeleton-db
+    db:
+        container_name: db
         image: postgres:13.4-alpine
         restart: on-failure
-        volumes:
-            - rv-volume:/var/lib/postgresql/data
-        env_file:
-            - postgres.dev.env
-        networks:
-            internal-net:
-
-volumes:
-    rv-volume:
-    rv-gradle-cache:
-
-networks:
-    internal-net:
-        name: rv-skeleton-net
+        environment:
+            - POSTGRES_USER=test
+            - POSTGRES_PASSWORD=testpassw 
+            - POSTGRES_DB=appdb 
