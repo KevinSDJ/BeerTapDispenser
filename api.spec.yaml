@@ -2,9 +2,7 @@ openapi: 3.1.0
 x-stoplight:
   id: juus8uwnzzal5
 info:
-  description: "This API manages the flow of a tap beer dispenser mechanism to help those bars that allow their clients 
-  to serve themselves beer. Every time a client opens the tap, this API starts counting how many liters come out of the 
-  tap until is closed. \n\nAfter that, the bartender could know how much their customers have spent drinking beer! 🍻"
+  description: "er could know how much their customers have spent drinking beer! 🍻"
   version: 1.0.0
   title: Beer tap dispenser
   contact:
