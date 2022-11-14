@@ -6,6 +6,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class BeerDispenserApplicationTests {
 
-	
+	@Test
+    public void contextLoad(){
+
+    }
+
 
 }
