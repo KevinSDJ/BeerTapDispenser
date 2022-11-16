@@ -19,22 +19,25 @@ public class Summary {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="dispenser_id",referencedColumnName = "_id")
     private Dispenser dispenser;
+
+
     public Summary() {
     }
+
     public Long getId() {
-        return id;
+        return this.id;
     }
     public void setId(Long id) {
         this.id = id;
     }
     public Double getTotal_amount() {
-        return total_amount;
+        return this.total_amount;
     }
     public void setTotal_amount(Double total_amount) {
         this.total_amount = this.total_amount+total_amount;
     }
     public Dispenser getDispenser() {
-        return dispenser;
+        return this.dispenser;
     }
     public void setDispenser(Dispenser dispenser) {
         this.dispenser = dispenser;

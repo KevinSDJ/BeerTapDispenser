@@ -13,46 +13,50 @@ import java.util.List;
 @Table(name= "Dispensers")
 public class Dispenser {
     
+    public Dispenser() {
+    }
     @Id
     @GeneratedValue
     private UUID _id;
     private Double flow_amount;
-    private Status status=Status.CLOSE;
+    private Status status=Status.CLOSED;
     @OneToMany
     @JoinColumn(name= "id_dispenser")
     private List<Consumption> usage;
+
+
     public Dispenser(Double flow_amount) {
         this.flow_amount = flow_amount;
     }
+    
     public UUID get_id() {
-        return _id;
+        return this._id;
     }
     public void set_id(UUID _id) {
         this._id = _id;
     }
     public Double getFlow_amount() {
-        return flow_amount;
+        return this.flow_amount;
     }
     public void setFlow_amount(Double flow_amount) {
         this.flow_amount = flow_amount;
     }
     public Status getStatus() {
-        return status;
+        return this.status;
     }
     public void setStatus(Status status) {
         this.status = status;
     }
     public List<Consumption> getUsage() {
-        return usage;
+        return this.usage;
     }
     public void setUsage(List<Consumption> usage) {
         this.usage = usage;
     }
+
     @Override
     public String toString() {
         return "Dispenser [_id=" + _id + ", flow_amount=" + flow_amount + ", status=" + status + ", usage=" + usage
                 + "]";
     }
-
-    
 }
