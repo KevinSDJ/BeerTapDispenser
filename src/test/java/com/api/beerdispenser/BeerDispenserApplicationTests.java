@@ -9,7 +9,6 @@ import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.api.beerdispenser.entities.Dispenser;
 import com.api.beerdispenser.entities.Summary;
 import com.api.beerdispenser.repositories.BeerDispenserRepository;

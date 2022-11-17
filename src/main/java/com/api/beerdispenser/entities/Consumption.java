@@ -18,6 +18,7 @@ public class Consumption {
     private Date open_at;
     @Column(nullable = true)
     private Date close_at;
+    
     public Consumption(Date open_at) {
         this.open_at = open_at;
     }
