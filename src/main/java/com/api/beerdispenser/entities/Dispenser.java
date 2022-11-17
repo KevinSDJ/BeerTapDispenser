@@ -2,17 +2,20 @@ package com.api.beerdispenser.entities;
 
 import java.util.UUID;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.io.Serializable;
 import java.util.List;
 
 @Entity
 @Table(name= "Dispensers")
-public class Dispenser {
-    
+public class Dispenser implements Serializable {
+    private static final long serialVersionUID = 1234567L;
+
     public Dispenser() {
     }
     @Id
@@ -20,9 +23,7 @@ public class Dispenser {
     private UUID _id;
     private Double flow_amount;
     private Status status=Status.CLOSED;
-    @OneToMany
-    @JoinColumn(name= "id_dispenser")
-    private List<Consumption> usage;
+    
 
 
     public Dispenser(Double flow_amount) {
@@ -47,16 +48,6 @@ public class Dispenser {
     public void setStatus(Status status) {
         this.status = status;
     }
-    public List<Consumption> getUsage() {
-        return this.usage;
-    }
-    public void setUsage(List<Consumption> usage) {
-        this.usage = usage;
-    }
-
-    @Override
-    public String toString() {
-        return "Dispenser [_id=" + _id + ", flow_amount=" + flow_amount + ", status=" + status + ", usage=" + usage
-                + "]";
-    }
+    
+    
 }

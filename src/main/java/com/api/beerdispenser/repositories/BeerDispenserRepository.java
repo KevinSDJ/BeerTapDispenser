@@ -8,4 +8,5 @@ import com.api.beerdispenser.entities.Dispenser;
 @Repository
 public interface BeerDispenserRepository extends JpaRepository<Dispenser,UUID> {
     
+
 }

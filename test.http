@@ -8,3 +8,6 @@ Content-Type: application/json
 {
     "flow_amount":0.080
 }
+
+###
+GET http://localhost:8080/beer-tap-dispenser/dispenser HTTP/1.1
