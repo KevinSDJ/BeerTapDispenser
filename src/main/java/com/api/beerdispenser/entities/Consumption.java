@@ -9,20 +9,19 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 @Entity
 @Data 
-@AllArgsConstructor
-@NoArgsConstructor
+@RequiredArgsConstructor
 public class Consumption {
 
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long _id;
     @Column(nullable = true)
-    private Date open_at;
+    private final @NonNull Date open_at;
     @Column(nullable = true)
     private Date close_at;
     @ManyToOne()
