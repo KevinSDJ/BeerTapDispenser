@@ -5,7 +5,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.JoinColumn;
 
 
@@ -16,8 +15,8 @@ public class Summary {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
     private Double total_amount=0.0;
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="dispenser_id",referencedColumnName = "_id")
+    @OneToOne
+    @JoinColumn(name="dispenser_id")
     private Dispenser dispenser;
 
 

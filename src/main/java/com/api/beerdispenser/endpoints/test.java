@@ -1,14 +1,21 @@
 package com.api.beerdispenser.endpoints;
 
 import java.util.Date;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.api.beerdispenser.projections.DispenserFull;
+import com.api.beerdispenser.services.impl.DispensersServiceImpl;
+
 
 
 @RestController
 public class test {
     St n = new St();
+    @Autowired
+    DispensersServiceImpl dispensersServiceImpl;
 
     @GetMapping("/")
     public ResponseEntity<String> testApi(){
@@ -18,7 +25,8 @@ public class test {
             System.out.println(seconds);
             n.init=null;
             n.before=null;
-            return ResponseEntity.ok("seconds: "+seconds);
+            Double exampleprice= 0.080;
+            return ResponseEntity.ok("seconds: "+seconds+", price: "+(exampleprice*seconds));
         }
         if(n.before==null&& n.init!=null){
             n.before= System.currentTimeMillis();
@@ -30,6 +38,15 @@ public class test {
         System.out.println("second request: "+n.viewBefore());
         return ResponseEntity.ok("registry");
     }
+    @GetMapping(value="/random-uuid")
+    public ResponseEntity<List<DispenserFull>> getFull() {
+        List<DispenserFull> d=dispensersServiceImpl.getAllDispenserFull();
+        System.out.println(d);
+        return ResponseEntity.ok(d);
+    }
+
+    
+    
 }
 
 

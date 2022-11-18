@@ -7,6 +7,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
 @Entity
 public class Consumption {
@@ -18,6 +20,9 @@ public class Consumption {
     private Date open_at;
     @Column(nullable = true)
     private Date close_at;
+    @ManyToOne()
+    @JoinColumn(name="dispenser_id")
+    private Dispenser dispenser;
     
     public Consumption(Date open_at) {
         this.open_at = open_at;
