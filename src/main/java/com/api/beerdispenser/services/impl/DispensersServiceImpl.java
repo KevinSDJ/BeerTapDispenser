@@ -1,6 +1,8 @@
 package com.api.beerdispenser.services.impl;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +17,7 @@ import com.api.beerdispenser.projections.DispenserFull;
 import com.api.beerdispenser.repositories.BeerDispenserRepository;
 import com.api.beerdispenser.services.IDispensersService;
 import com.api.beerdispenser.Exceptions.InternalError;
+import com.api.beerdispenser.Exceptions.NotFound;
 
 
 @Service
@@ -23,13 +26,14 @@ public class DispensersServiceImpl implements IDispensersService {
     final Logger log = LoggerFactory.getLogger(DispensersServiceImpl.class);
 
     @Autowired
-    BeerDispenserRepository beerDispenserRepository;
+    BeerDispenserRepository dispenserRepository;
 
     @Override
     public Dispenser createDispenser(requestDTO dispenser){
         try{
-            Dispenser newdispenser= new Dispenser(dispenser.flow_amount());
-            return beerDispenserRepository.save(newdispenser);
+            Dispenser newdispenser=  new Dispenser(dispenser.flow_amount());
+            
+            return dispenserRepository.save(newdispenser);
 
         }catch (Exception e){
             log.error(e.getMessage());
@@ -39,7 +43,7 @@ public class DispensersServiceImpl implements IDispensersService {
     @Override
     public List<DispenserFit> geAllDispensersFit()  {
         try{
-            return beerDispenserRepository.findAllFit();
+            return dispenserRepository.findAllFit();
         }catch (Exception e){
             log.error(e.getMessage());
             throw new InternalError("fail fetch dispensers");
@@ -49,7 +53,22 @@ public class DispensersServiceImpl implements IDispensersService {
     @Override
     public List<DispenserFull> getAllDispenserFull() {
         
-        return beerDispenserRepository.findAllFull();
+        return dispenserRepository.findAllFull();
+    }
+    @Override
+    public Dispenser findOneDispenser(UUID id) {
+            Optional<Dispenser> dispenser=null;
+            try{
+                dispenser= dispenserRepository.findById(id);
+            }catch(Exception e){
+                log.error(e.getMessage());
+                throw new InternalError("Fail api Transaction");
+            }
+            if(dispenser.isPresent()){
+                return dispenser.get();
+            }else{
+                throw new NotFound("Dispenser not Match");
+            }
     }
     
 }

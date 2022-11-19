@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 @RequestMapping("/beer-tap-dispenser/")
 public class DispenserEndpoint {
     
+    enum Cats {D,F};
     @Autowired
     DispensersServiceImpl dispensersServiceImpl;
 
@@ -31,7 +32,8 @@ public class DispenserEndpoint {
     @PutMapping("dispenser/{id}/status")
     public ResponseEntity<String> getAllDipenserFitData(@PathVariable(name = "id") UUID id,@RequestBody StatusRequestDTO status) throws Exception{
 
-        System.out.println(status);
+        Dispenser dispenser = dispensersServiceImpl.findOneDispenser(id);
+        System.out.println(dispenser);
         System.out.println(id);
         return ResponseEntity.ok("Sdsad");
     }
