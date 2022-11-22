@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.api.beerdispenser.DTOS.newDispenser.requestDTO;
 import com.api.beerdispenser.entities.Dispenser;
+import com.api.beerdispenser.entities.Status;
 import com.api.beerdispenser.projections.DispenserFit;
 import com.api.beerdispenser.projections.DispenserFull;
 import com.api.beerdispenser.repositories.BeerDispenserRepository;
@@ -64,11 +65,29 @@ public class DispensersServiceImpl implements IDispensersService {
                 log.error(e.getMessage());
                 throw new InternalError("Fail api Transaction");
             }
+            
             if(dispenser.isPresent()){
                 return dispenser.get();
             }else{
-                throw new NotFound("Dispenser not Match");
+                throw new NotFound("Dispenser not found");
             }
+    }
+    @Override
+    public Dispenser updateState(UUID id, String status) {
+        
+        Dispenser dispenser = findOneDispenser(id);
+        dispenser.setStatus(Status.valueOf(status).getStatus());
+        try{
+            return dispenserRepository.save(dispenser);
+        }catch(Exception e){
+            throw new InternalError("server error: to change status item");
+        }
+        
+    }
+    @Override
+    public Boolean isOpen(UUID id) {
+        
+        return dispenserRepository.isOpen(id);
     }
     
 }

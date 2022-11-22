@@ -7,6 +7,7 @@ import com.api.beerdispenser.DTOS.StatusRequestDTO;
 import com.api.beerdispenser.DTOS.newDispenser.requestDTO;
 import com.api.beerdispenser.DTOS.newDispenser.responseDTO;
 import com.api.beerdispenser.entities.Dispenser;
+import com.api.beerdispenser.services.impl.ConsumptionServiceImpl;
 import com.api.beerdispenser.services.impl.DispensersServiceImpl;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +19,12 @@ import org.springframework.web.bind.annotation.PutMapping;
 @RestController
 @RequestMapping("/beer-tap-dispenser/")
 public class DispenserEndpoint {
-    
-    enum Cats {D,F};
+
     @Autowired
     DispensersServiceImpl dispensersServiceImpl;
+
+    @Autowired
+    ConsumptionServiceImpl consumptionServiceImpl;
 
     @PostMapping("/dispenser")
     public ResponseEntity<responseDTO> newDispenser(@RequestBody requestDTO dispenser) throws Exception{
@@ -29,12 +32,11 @@ public class DispenserEndpoint {
         
         return ResponseEntity.ok(new responseDTO(s.get_id(),s.getFlow_amount()));
     }
-    @PutMapping("dispenser/{id}/status")
+    @PutMapping("/dispenser/{id}/status")
     public ResponseEntity<String> getAllDipenserFitData(@PathVariable(name = "id") UUID id,@RequestBody StatusRequestDTO status) throws Exception{
 
-        Dispenser dispenser = dispensersServiceImpl.findOneDispenser(id);
-        System.out.println(dispenser);
-        System.out.println(id);
+        consumptionServiceImpl.intermediateOp(id, status.status());
+       
         return ResponseEntity.ok("Sdsad");
     }
     

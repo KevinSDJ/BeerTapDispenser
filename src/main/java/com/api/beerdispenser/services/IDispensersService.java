@@ -12,4 +12,6 @@ public interface IDispensersService {
     Dispenser createDispenser(requestDTO dispenser);
     List<DispenserFull> getAllDispenserFull();
     Dispenser findOneDispenser(UUID id);
+    Dispenser updateState(UUID id, String status);
+    Boolean isOpen(UUID id);
 }

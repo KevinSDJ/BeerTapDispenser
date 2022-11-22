@@ -20,10 +20,11 @@ public class Consumption {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long _id;
-    @Column(nullable = true)
+    @Column(nullable = false)
     private final @NonNull Date open_at;
     @Column(nullable = true)
     private Date close_at;
+    private Double usage_amount=0.0;
     @ManyToOne()
     @JoinColumn(name="dispenser_id")
     private Dispenser dispenser;

@@ -9,3 +9,8 @@ spring:
       ddl-auto: update
     show-sql: true
     open-in-view: false
+server:
+  servlet:
+    context-path: /
+  error:
+    include-stacktrace: never

@@ -9,7 +9,7 @@ Content-Type: application/json
 }
 
 ###
-PUT http://localhost:8080/beer-tap-dispenser/dispenser/f0a231d0-20a7-48d0-937a-5a7508319ad0/status HTTP/1.1
+PUT http://localhost:8080/beer-tap-dispenser/dispenser/5b402c03-83f6-4bbe-9e53-47856b4ca552/status HTTP/1.1
 Content-Type: application/json
 
 {
