@@ -6,7 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.api.beerdispenser.projections.ConsumptionFullData;
 import com.api.beerdispenser.projections.DispenserFull;
+import com.api.beerdispenser.services.impl.ConsumptionServiceImpl;
 import com.api.beerdispenser.services.impl.DispensersServiceImpl;
 
 
@@ -15,7 +18,9 @@ import com.api.beerdispenser.services.impl.DispensersServiceImpl;
 public class test {
     St n = new St();
     @Autowired
-    DispensersServiceImpl dispensersServiceImpl;
+    private DispensersServiceImpl dispensersServiceImpl;
+    @Autowired
+    private ConsumptionServiceImpl consumptionServiceImpl;
 
     @GetMapping("/")
     public ResponseEntity<String> testApi(){
@@ -38,15 +43,18 @@ public class test {
         System.out.println("second request: "+n.viewBefore());
         return ResponseEntity.ok("registry");
     }
-    @GetMapping(value="/random-uuid")
+    @GetMapping("/random-uuid")
     public ResponseEntity<List<DispenserFull>> getFull() {
         List<DispenserFull> d=dispensersServiceImpl.getAllDispenserFull();
         System.out.println(d);
         return ResponseEntity.ok(d);
     }
-
-    
-    
+    @GetMapping("/usages")
+    public ResponseEntity<List<ConsumptionFullData>> getUsages(){
+        List<ConsumptionFullData> usages=consumptionServiceImpl.listAllUsages();
+        
+        return ResponseEntity.ok(usages);
+    }
 }
 
 

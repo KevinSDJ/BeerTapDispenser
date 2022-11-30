@@ -3,20 +3,17 @@ package com.api.beerdispenser.services.impl;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.api.beerdispenser.DTOS.newDispenser.requestDTO;
 import com.api.beerdispenser.entities.Dispenser;
-import com.api.beerdispenser.entities.Status;
 import com.api.beerdispenser.projections.DispenserFit;
 import com.api.beerdispenser.projections.DispenserFull;
 import com.api.beerdispenser.repositories.BeerDispenserRepository;
 import com.api.beerdispenser.services.IDispensersService;
+import jakarta.transaction.Transactional;
 import com.api.beerdispenser.Exceptions.InternalError;
 import com.api.beerdispenser.Exceptions.NotFound;
 
@@ -27,7 +24,7 @@ public class DispensersServiceImpl implements IDispensersService {
     final Logger log = LoggerFactory.getLogger(DispensersServiceImpl.class);
 
     @Autowired
-    BeerDispenserRepository dispenserRepository;
+    private BeerDispenserRepository dispenserRepository;
 
     @Override
     public Dispenser createDispenser(requestDTO dispenser){
@@ -56,6 +53,7 @@ public class DispensersServiceImpl implements IDispensersService {
         
         return dispenserRepository.findAllFull();
     }
+    
     @Override
     public Dispenser findOneDispenser(UUID id) {
             Optional<Dispenser> dispenser=null;
@@ -65,25 +63,28 @@ public class DispensersServiceImpl implements IDispensersService {
                 log.error(e.getMessage());
                 throw new InternalError("Fail api Transaction");
             }
-            
             if(dispenser.isPresent()){
                 return dispenser.get();
             }else{
                 throw new NotFound("Dispenser not found");
             }
     }
+
     @Override
     public Dispenser updateState(UUID id, String status) {
         
-        Dispenser dispenser = findOneDispenser(id);
-        dispenser.setStatus(Status.valueOf(status).getStatus());
         try{
+            Dispenser dispenser = findOneDispenser(id);
+            dispenser.setStatus(status);
+        
             return dispenserRepository.save(dispenser);
         }catch(Exception e){
+            log.error(e.getMessage());
             throw new InternalError("server error: to change status item");
         }
         
     }
+
     @Override
     public Boolean isOpen(UUID id) {
         

@@ -5,10 +5,9 @@ spring:
     username: test
     password: testpassw
   jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: create-drop
-    show-sql: true
+    show-sql: false
     open-in-view: false
     database: h2
 server:

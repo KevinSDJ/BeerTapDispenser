@@ -34,7 +34,6 @@ public class DispenserEndpoint {
     }
     @PutMapping("/dispenser/{id}/status")
     public ResponseEntity<String> getAllDipenserFitData(@PathVariable(name = "id") UUID id,@RequestBody StatusRequestDTO status) throws Exception{
-
         consumptionServiceImpl.intermediateOp(id, status.status());
        
         return ResponseEntity.ok("Sdsad");

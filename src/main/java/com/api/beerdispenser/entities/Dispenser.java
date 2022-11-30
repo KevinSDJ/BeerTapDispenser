@@ -28,7 +28,8 @@ public class Dispenser implements Serializable {
     @Column(name = "_id", updatable = false, nullable = false, columnDefinition = "VARCHAR(46)")
     private UUID _id;
     private @NonNull Double flow_amount;
-    private String status=Status.CLOSED.getStatus();
+    @Column(name = "status",nullable = false)
+    private String status= Status.CLOSED.toString();
     @OneToMany(mappedBy = "dispenser",fetch = FetchType.EAGER)
     private List<Consumption> usages;
     @OneToOne(mappedBy = "dispenser")
