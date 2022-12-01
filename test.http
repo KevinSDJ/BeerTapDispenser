@@ -8,20 +8,67 @@ Content-Type: application/json
     "flow_amount":0.080
 }
 
-###
-PUT http://localhost:8080/beer-tap-dispenser/dispenser/df612ea2-8597-4f9a-b396-d5a0cc251cf1/status HTTP/1.1
+### crear consumo
+PUT http://localhost:8080/beer-tap-dispenser/dispenser/d529bb35-bd5c-4932-a4e4-43222ef801ae/status HTTP/1.1
 Content-Type: application/json
 
 {
-    "status":"OPEN"
+    "status":""
 }
 
+### crear consumo
+POST http://localhost:8080/usages HTTP/1.1
 
-###
-GET http://localhost:8080/random-uuid HTTP/1.1
-
-###
+### ver los consumos
 GET http://localhost:8080/usages HTTP/1.1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -3,6 +3,7 @@ package com.api.beerdispenser;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -68,7 +69,15 @@ class BeerDispenserApplicationTests {
         Consumption newUsage = new Consumption(new Date(System.currentTimeMillis()));
         newUsage.setDispenser(data.get(0));
         Consumption usage= consumptionRepository.save(newUsage);
+
+        Optional<Consumption> c= consumptionRepository.findById(1);
+        System.out.println(c.get());
         assertEquals(false,usage.equals(null));
+    }
+    @Test
+    @Order(5)
+    public void checkUsage(){
+       
     }
 }
 

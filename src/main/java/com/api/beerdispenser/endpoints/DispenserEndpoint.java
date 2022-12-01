@@ -33,11 +33,9 @@ public class DispenserEndpoint {
         return ResponseEntity.ok(new responseDTO(s.get_id(),s.getFlow_amount()));
     }
     @PutMapping("/dispenser/{id}/status")
-    public ResponseEntity<String> getAllDipenserFitData(@PathVariable(name = "id") UUID id,@RequestBody StatusRequestDTO status) throws Exception{
-        consumptionServiceImpl.intermediateOp(id, status.status());
-       
-        return ResponseEntity.ok("Sdsad");
+    public ResponseEntity<Dispenser> getAllDipenserFitData(@PathVariable(name = "id") UUID id,@RequestBody StatusRequestDTO status) throws Exception{
+        Dispenser dispenser=dispensersServiceImpl.updateState(id, status.status());
+        return ResponseEntity.ok(dispenser);
     }
     
-
 }

@@ -5,10 +5,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.api.beerdispenser.projections.ConsumptionFullData;
-import com.api.beerdispenser.projections.DispenserFull;
+import com.api.beerdispenser.entities.Consumption;
+import com.api.beerdispenser.entities.Dispenser;
 import com.api.beerdispenser.services.impl.ConsumptionServiceImpl;
 import com.api.beerdispenser.services.impl.DispensersServiceImpl;
 
@@ -44,16 +44,21 @@ public class test {
         return ResponseEntity.ok("registry");
     }
     @GetMapping("/random-uuid")
-    public ResponseEntity<List<DispenserFull>> getFull() {
-        List<DispenserFull> d=dispensersServiceImpl.getAllDispenserFull();
+    public ResponseEntity<List<Dispenser>> getFull() {
+        List<Dispenser> d=dispensersServiceImpl.getAllDispensers();
         System.out.println(d);
         return ResponseEntity.ok(d);
     }
     @GetMapping("/usages")
-    public ResponseEntity<List<ConsumptionFullData>> getUsages(){
-        List<ConsumptionFullData> usages=consumptionServiceImpl.listAllUsages();
-        
+    public ResponseEntity<List<Consumption>> getUsages() throws Exception{
+        List<Consumption> usages= consumptionServiceImpl.listAllUsages();
+        System.out.println(usages);
         return ResponseEntity.ok(usages);
+    }
+    @PostMapping("/usages")
+    public ResponseEntity<Consumption> postUsage() throws Exception{
+        Consumption consumption = consumptionServiceImpl.createConsumption();
+        return ResponseEntity.ok(consumption);
     }
 }
 
