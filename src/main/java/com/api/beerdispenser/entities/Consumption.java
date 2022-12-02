@@ -1,5 +1,6 @@
 package com.api.beerdispenser.entities;
 
+import java.io.Serializable;
 import java.util.Date;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -10,7 +11,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
 @Entity
-public class Consumption {
+public class Consumption implements Serializable {
 
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)

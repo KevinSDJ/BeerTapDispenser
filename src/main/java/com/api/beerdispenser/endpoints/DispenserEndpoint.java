@@ -9,6 +9,8 @@ import com.api.beerdispenser.DTOS.newDispenser.responseDTO;
 import com.api.beerdispenser.entities.Dispenser;
 import com.api.beerdispenser.services.impl.ConsumptionServiceImpl;
 import com.api.beerdispenser.services.impl.DispensersServiceImpl;
+import com.api.beerdispenser.services.impl.HelpRedirByCase;
+
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,10 +23,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 public class DispenserEndpoint {
 
     @Autowired
-    DispensersServiceImpl dispensersServiceImpl;
+    private DispensersServiceImpl dispensersServiceImpl;
 
     @Autowired
-    ConsumptionServiceImpl consumptionServiceImpl;
+    private HelpRedirByCase helpRedirByCase;
 
     @PostMapping("/dispenser")
     public ResponseEntity<responseDTO> newDispenser(@RequestBody requestDTO dispenser) throws Exception{
@@ -33,8 +35,9 @@ public class DispenserEndpoint {
         return ResponseEntity.ok(new responseDTO(s.get_id(),s.getFlow_amount()));
     }
     @PutMapping("/dispenser/{id}/status")
-    public ResponseEntity<Dispenser> getAllDipenserFitData(@PathVariable(name = "id") UUID id,@RequestBody StatusRequestDTO status) throws Exception{
-        Dispenser dispenser=dispensersServiceImpl.updateState(id, status.status());
+    public ResponseEntity<Dispenser> generateUsageDispenser(@PathVariable(name = "id") UUID id,@RequestBody StatusRequestDTO status) throws Exception{
+        Dispenser dispenser = dispensersServiceImpl.updateState(id, status.status());
+        helpRedirByCase.redirByCase(dispenser);
         return ResponseEntity.ok(dispenser);
     }
     

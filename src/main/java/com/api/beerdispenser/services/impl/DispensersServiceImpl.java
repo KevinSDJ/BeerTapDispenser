@@ -12,7 +12,6 @@ import com.api.beerdispenser.DTOS.newDispenser.requestDTO;
 import com.api.beerdispenser.entities.Dispenser;
 import com.api.beerdispenser.repositories.BeerDispenserRepository;
 import jakarta.transaction.Transactional;
-
 import com.api.beerdispenser.Exceptions.BadRequest;
 import com.api.beerdispenser.Exceptions.InternalError;
 import com.api.beerdispenser.Exceptions.NotFound;

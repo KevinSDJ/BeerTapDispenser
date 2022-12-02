@@ -20,4 +20,6 @@ public interface ConsumptionRepository extends JpaRepository<Consumption,Integer
     @Query(value ="SELECT c._id,c.open_at,c.close_at,c.usage_amount,c.dispenser_id FROM Consumption as c where c.dispenser_id=:id",nativeQuery = true)
     List<ConsumptionFullData> findByDispenserId(@Param("id") UUID id);
 
+    @Query(value="SELECT TOP 1 * FROM  Consumption AS c WHERE (c.close_at IS NULL) AND c.dispenser_id=:id", nativeQuery = true)
+    Consumption findOneWhereOpenAndByDispenser(@Param("id") UUID id) ;
 }

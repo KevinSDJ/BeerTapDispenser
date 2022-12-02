@@ -1,5 +1,7 @@
 package com.api.beerdispenser.entities;
 
+import java.io.Serializable;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import org.hibernate.annotations.GenericGenerator;
@@ -15,7 +17,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name= "Dispensers")
-public class Dispenser {
+public class Dispenser implements Serializable {
 
     @Id
     @GeneratedValue(generator = "uuid2")
@@ -25,8 +27,7 @@ public class Dispenser {
     private Double flow_amount;
     @Column(name = "status",nullable = false)
     private String status= "CLOSED";
-    @OneToMany(mappedBy = "dispenser",fetch = FetchType.EAGER)
-    private List<Consumption> usages;
+   
     @OneToOne(mappedBy = "dispenser")
     private Summary summary;
     public Dispenser(){}
@@ -59,13 +60,7 @@ public class Dispenser {
         this.status = status;
     }
 
-    public List<Consumption> getUsages() {
-        return usages;
-    }
-
-    public void setUsages(List<Consumption> usages) {
-        this.usages = usages;
-    }
+    
 
     public Summary getSummary() {
         return summary;
@@ -77,7 +72,7 @@ public class Dispenser {
 
     @Override
     public String toString() {
-        return "Dispenser [_id=" + _id + ", flow_amount=" + flow_amount + ", status=" + status + ", usages=" + usages
+        return "Dispenser [_id=" + _id + ", flow_amount=" + flow_amount + ", status=" + status + ", usages=" 
                 + ", summary=" + summary + "]";
     }
 

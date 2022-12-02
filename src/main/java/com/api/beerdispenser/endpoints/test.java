@@ -2,15 +2,19 @@ package com.api.beerdispenser.endpoints;
 
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.api.beerdispenser.entities.Consumption;
 import com.api.beerdispenser.entities.Dispenser;
 import com.api.beerdispenser.services.impl.ConsumptionServiceImpl;
 import com.api.beerdispenser.services.impl.DispensersServiceImpl;
+import com.api.beerdispenser.services.impl.HelpRedirByCase;
 
 
 
@@ -21,6 +25,8 @@ public class test {
     private DispensersServiceImpl dispensersServiceImpl;
     @Autowired
     private ConsumptionServiceImpl consumptionServiceImpl;
+    @Autowired
+    private HelpRedirByCase helpRedirByCase;
 
     @GetMapping("/")
     public ResponseEntity<String> testApi(){
@@ -55,11 +61,7 @@ public class test {
         System.out.println(usages);
         return ResponseEntity.ok(usages);
     }
-    @PostMapping("/usages")
-    public ResponseEntity<Consumption> postUsage() throws Exception{
-        Consumption consumption = consumptionServiceImpl.createConsumption();
-        return ResponseEntity.ok(consumption);
-    }
+   
 }
 
 
