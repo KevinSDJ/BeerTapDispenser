@@ -7,10 +7,8 @@ import com.api.beerdispenser.DTOS.StatusRequestDTO;
 import com.api.beerdispenser.DTOS.newDispenser.requestDTO;
 import com.api.beerdispenser.DTOS.newDispenser.responseDTO;
 import com.api.beerdispenser.entities.Dispenser;
-import com.api.beerdispenser.services.impl.ConsumptionServiceImpl;
 import com.api.beerdispenser.services.impl.DispensersServiceImpl;
 import com.api.beerdispenser.services.impl.HelpRedirByCase;
-
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

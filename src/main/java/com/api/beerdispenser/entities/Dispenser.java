@@ -1,17 +1,17 @@
 package com.api.beerdispenser.entities;
 
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import org.hibernate.annotations.GenericGenerator;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 
@@ -20,21 +20,22 @@ import jakarta.persistence.Table;
 public class Dispenser implements Serializable {
 
     @Id
-    @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name="uuid2",strategy = "uuid2")
-    @Column(name = "_id", updatable = false, nullable = false, columnDefinition = "VARCHAR(46)")
+    @GeneratedValue(generator = "uuid4",strategy = GenerationType.IDENTITY)
+    @GenericGenerator(name="uuid2",strategy = "uuid4")
+    @Column(nullable = false)
     private UUID _id;
     private Double flow_amount;
-    @Column(name = "status",nullable = false)
+    @Column(nullable = false)
     private String status= "CLOSED";
-   
-    @OneToOne(mappedBy = "dispenser")
-    private Summary summary;
-    public Dispenser(){}
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "dispenser",fetch = FetchType.LAZY)
+    private List<Consumption> usage;
 
+    
+    public Dispenser(){}
     public Dispenser(Double flow_amount){
         this.flow_amount=flow_amount;
     }
+
 
     public UUID get_id() {
         return _id;
@@ -60,21 +61,18 @@ public class Dispenser implements Serializable {
         this.status = status;
     }
 
-    
-
-    public Summary getSummary() {
-        return summary;
+    public List<Consumption> getUsage() {
+        return usage;
     }
 
-    public void setSummary(Summary summary) {
-        this.summary = summary;
-    }
-
-    @Override
-    public String toString() {
-        return "Dispenser [_id=" + _id + ", flow_amount=" + flow_amount + ", status=" + status + ", usages=" 
-                + ", summary=" + summary + "]";
+    public void setUsage(List<Consumption> usage) {
+        this.usage = usage;
     }
 
  
+    @Override
+    public String toString() {
+        return "Dispenser [_id=" + _id + ", flow_amount=" + flow_amount + ", status=" + status + ", usages=" 
+                + ", summary=" + "]";
+    }
 }
