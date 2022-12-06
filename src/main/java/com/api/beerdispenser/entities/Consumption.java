@@ -2,17 +2,14 @@ package com.api.beerdispenser.entities;
 
 import java.io.Serializable;
 import java.util.Date;
-
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.MapsId;
+
 
 @Entity
 public class Consumption implements Serializable {
@@ -24,9 +21,11 @@ public class Consumption implements Serializable {
     private Date open_at;
     @Column(nullable = true)
     private Date close_at;
-    private Double usage_amount=0.0;
-    @ManyToOne(cascade = CascadeType.ALL,optional = false ,fetch = FetchType.LAZY)
-    @MapsId("_id")
+    @Column(nullable= false)
+    private Double flow_volume;
+    @Column(precision = 6)
+    private Double total_spent=0.0;
+    @ManyToOne()
     @JoinColumn(name="dispenser_id")
     private Dispenser dispenser;
     public Consumption(Date open_at) {
@@ -52,11 +51,17 @@ public class Consumption implements Serializable {
     public void setClose_at(Date close_at) {
         this.close_at = close_at;
     }
-    public Double getUsage_amount() {
-        return usage_amount;
+    public Double getFlow_volume() {
+        return flow_volume;
     }
-    public void setUsage_amount(Double usage_amount) {
-        this.usage_amount = usage_amount;
+    public void setFlow_volume(Double flow_volume) {
+        this.flow_volume = flow_volume;
+    }
+    public Double getTotal_spent() {
+        return Math.round(total_spent*1000)/1000.0;
+    }
+    public void setTotal_spent(Double total_spent) {
+        this.total_spent = total_spent;
     }
     public Dispenser getDispenser() {
         return dispenser;
@@ -66,10 +71,10 @@ public class Consumption implements Serializable {
     }
     @Override
     public String toString() {
-        return "Consumption [_id=" + _id + ", open_at=" + open_at + ", close_at=" + close_at + ", usage_amount="
-                + usage_amount + ", dispenser=" + dispenser + "]";
+        return "Consumption [_id=" + _id + ", open_at=" + open_at + ", close_at=" + close_at + ", flow_volume="
+                + flow_volume + ", total_spent=" + total_spent + ", dispenser=" + dispenser + "]";
     }
-
+   
 
 
 }

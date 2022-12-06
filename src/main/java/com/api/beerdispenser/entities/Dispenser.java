@@ -1,78 +1,67 @@
 package com.api.beerdispenser.entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import org.hibernate.annotations.GenericGenerator;
-import jakarta.persistence.CascadeType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
 
 
 @Entity
-@Table(name= "Dispensers")
 public class Dispenser implements Serializable {
 
     @Id
-    @GeneratedValue(generator = "uuid4",strategy = GenerationType.IDENTITY)
+    @GeneratedValue(generator = "uuid4")
     @GenericGenerator(name="uuid2",strategy = "uuid4")
     @Column(nullable = false)
     private UUID _id;
-    private Double flow_amount;
+    @Column(nullable=false)
+    private Double flow_volume;
     @Column(nullable = false)
     private String status= "CLOSED";
-    @OneToMany(cascade = CascadeType.ALL,mappedBy = "dispenser",fetch = FetchType.LAZY)
-    private List<Consumption> usage;
+    @JsonIgnore
+    @OneToMany(mappedBy = "dispenser")
+    private List<Consumption> usage= new ArrayList<>();
 
     
     public Dispenser(){}
-    public Dispenser(Double flow_amount){
-        this.flow_amount=flow_amount;
+    public Dispenser(Double flow_volume){
+        this.flow_volume=flow_volume;
     }
-
-
     public UUID get_id() {
         return _id;
     }
-
     public void set_id(UUID _id) {
         this._id = _id;
     }
-
-    public Double getFlow_amount() {
-        return flow_amount;
+    public Double getFlow_volume() {
+        return flow_volume;
     }
-
-    public void setFlow_amount(Double flow_amount) {
-        this.flow_amount = flow_amount;
+    public void setFlow_volume(Double flow_volume) {
+        this.flow_volume = flow_volume;
     }
-
     public String getStatus() {
         return status;
     }
-
     public void setStatus(String status) {
         this.status = status;
     }
-
     public List<Consumption> getUsage() {
         return usage;
     }
-
     public void setUsage(List<Consumption> usage) {
         this.usage = usage;
     }
-
- 
     @Override
     public String toString() {
-        return "Dispenser [_id=" + _id + ", flow_amount=" + flow_amount + ", status=" + status + ", usages=" 
-                + ", summary=" + "]";
+        return "Dispenser [_id=" + _id + ", flow_volume=" + flow_volume + ", status=" + status + ", usage=" + usage
+                + "]";
     }
+
 }

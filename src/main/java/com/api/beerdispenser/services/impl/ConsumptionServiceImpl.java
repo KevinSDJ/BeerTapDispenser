@@ -2,9 +2,7 @@ package com.api.beerdispenser.services.impl;
 
 import java.util.Date;
 import java.util.List;
-
 import java.util.UUID;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,11 +10,10 @@ import org.springframework.stereotype.Service;
 import com.api.beerdispenser.entities.Consumption;
 import com.api.beerdispenser.entities.Dispenser;
 import com.api.beerdispenser.repositories.ConsumptionRepository;
-
 import jakarta.transaction.Transactional;
-
 import com.api.beerdispenser.Exceptions.InternalError;
 import com.api.beerdispenser.Exceptions.NotFound;
+
 
 @Service
 @Transactional
@@ -27,7 +24,6 @@ public class ConsumptionServiceImpl {
     private ConsumptionRepository consumptionRepository;
     @Autowired
     DispensersServiceImpl dispensersServiceImpl;
-
 
     public List<Consumption> listAllUsages() {
 
@@ -52,11 +48,13 @@ public class ConsumptionServiceImpl {
         }
         return consumption;
     }
-
+    
+   
     public Consumption createConsumption(Dispenser dispenser) {
         try {
             Consumption newUsage = new Consumption(new Date(System.currentTimeMillis()));
             newUsage.setDispenser(dispenser);
+            newUsage.setFlow_volume(dispenser.getFlow_volume());
             return consumptionRepository.save(newUsage);
         } catch (Exception e) {
             log.error(e.getMessage());
@@ -79,7 +77,9 @@ public class ConsumptionServiceImpl {
            consumption.setClose_at(new Date(System.currentTimeMillis()));
            Long dif = consumption.getClose_at().getTime() - consumption.getOpen_at().getTime();
            Integer seconds = (int) ( dif*(1.0/1000));
-           consumption.setUsage_amount(dispenser.getFlow_amount()* seconds);
+           System.out.println(seconds);
+           Double value=dispenser.getFlow_volume()* seconds;
+           consumption.setTotal_spent(value);
            return consumptionRepository.save(consumption);
         } catch (Exception e) {
             throw new InternalError(e.getMessage());

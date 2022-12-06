@@ -5,26 +5,27 @@ POST http://localhost:8080/beer-tap-dispenser/dispenser HTTP/1.1
 Content-Type: application/json
 
 {
-    "flow_amount":0.080
+    "flow_amount":0.54
 }
 
 ### crear consumo
-PUT http://localhost:8080/beer-tap-dispenser/dispenser/50e2a8c6-2564-4909-bb6e-a2dd2f30eb65/status HTTP/1.1
+PUT http://localhost:8080/beer-tap-dispenser/dispenser/abeabe77-edc0-4699-89c5-c98f3c0d0e9a/status HTTP/1.1
 Content-Type: application/json
 
 {
-    "status":"OPEN"
+    "status":"CLOSED"
 }
 
 
 ### ver los consumos
-GET http://localhost:8080/usages HTTP/1.1
+GET http://localhost:8080/test/usages HTTP/1.1
 
 ### ver ultimo abierto
-GET http://localhost:8080/dispensers HTTP/1.1
+GET http://localhost:8080/test/dispensers HTTP/1.1
 
-### test add usage 
-POST http://localhost:8080/usate-test/873a9d54-ac9b-4816-a04b-6357f3123002 HTTP/1.1
+### test add usage
+POST  http://localhost:8080/test/addusage HTTP/1.1
+
 
 
 
