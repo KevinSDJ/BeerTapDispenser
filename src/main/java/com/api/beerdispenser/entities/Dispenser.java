@@ -27,6 +27,7 @@ public class Dispenser implements Serializable {
     private String status= "CLOSED";
     @JsonIgnore
     @OneToMany(mappedBy = "dispenser")
+    
     private List<Consumption> usage= new ArrayList<>();
 
     

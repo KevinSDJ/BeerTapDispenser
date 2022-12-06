@@ -7,11 +7,14 @@ import com.api.beerdispenser.DTOS.StatusRequestDTO;
 import com.api.beerdispenser.DTOS.newDispenser.requestDTO;
 import com.api.beerdispenser.DTOS.newDispenser.responseDTO;
 import com.api.beerdispenser.entities.Dispenser;
+import com.api.beerdispenser.entities.Summary;
 import com.api.beerdispenser.services.impl.ConsumptionServiceImpl;
 import com.api.beerdispenser.services.impl.DispensersServiceImpl;
+import com.api.beerdispenser.services.impl.SummaryServiceImpl;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -24,6 +27,8 @@ public class DispenserEndpoint {
     private DispensersServiceImpl dispensersServiceImpl;
     @Autowired 
     private ConsumptionServiceImpl consumptionServiceImpl;
+    @Autowired
+    private SummaryServiceImpl summaryServiceImpl;
 
     @PostMapping("/dispenser")
     public ResponseEntity<responseDTO> newDispenser(@RequestBody requestDTO dispenser) throws Exception{
@@ -42,6 +47,18 @@ public class DispenserEndpoint {
         }
         
         return ResponseEntity.ok("Success");
+    }
+    @GetMapping("/dispenser/{id}/spending")
+    public ResponseEntity<Boolean> getSpending(@PathVariable(name="id") UUID id){
+        Boolean exist= summaryServiceImpl.existSummary(id);
+        Summary summary;
+        if(!exist){
+            summaryServiceImpl.createSummary(id);
+        }else{
+            summary=summaryServiceImpl.findSummary(id);
+        }
+        
+        return ResponseEntity.ok(exist);
     }
     
 }

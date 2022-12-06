@@ -34,6 +34,18 @@ public class ConsumptionServiceImpl {
             throw new InternalError(e.getMessage());
         }
     }
+    public List<Consumption> listAllByDispenserId(UUID id){
+        List<Consumption> usages;
+        try{
+            usages = consumptionRepository.findByDispenserId(id);
+        }catch(Exception e){
+            throw new InternalError("Error api process"); 
+        }
+        if(usages.equals(null)){
+            throw new NotFound("Dispensers not find");
+        }
+        return usages;
+    }
 
     public Consumption getInOpen(UUID id){
         Consumption consumption;

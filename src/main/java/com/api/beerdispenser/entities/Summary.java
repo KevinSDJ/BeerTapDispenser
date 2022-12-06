@@ -1,12 +1,14 @@
 package com.api.beerdispenser.entities;
 
+import java.util.HashSet;
+import java.util.Set;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.JoinColumn;
-
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class Summary {
@@ -18,10 +20,10 @@ public class Summary {
     @OneToOne
     @JoinColumn(name="dispenser_id")
     private Dispenser dispenser;
+    @OneToMany()
+    private Set<Consumption> usages= new HashSet<>();
     
-    public Summary(){
-
-    }
+    public Summary(){}
 
     public Long getId() {
         return id;
@@ -43,9 +45,20 @@ public class Summary {
         this.dispenser = dispenser;
     }
 
+    public Set<Consumption> getUsages() {
+        return usages;
+    }
+
+    public void setUsages(Set<Consumption> usages) {
+        this.usages = usages;
+    }
+
     @Override
     public String toString() {
-        return "Summary [id=" + id + ", total_amount=" + total_amount + ", dispenser=" + dispenser + "]";
+        return "Summary [id=" + id + ", total_amount=" + total_amount + ", usages="
+                + usages + "]";
     }
+
+   
 
 }
