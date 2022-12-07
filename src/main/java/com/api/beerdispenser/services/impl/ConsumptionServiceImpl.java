@@ -7,25 +7,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.api.beerdispenser.entities.Consumption;
+import org.springframework.transaction.annotation.Transactional;
+import com.api.beerdispenser.entities.Usage;
 import com.api.beerdispenser.entities.Dispenser;
 import com.api.beerdispenser.repositories.ConsumptionRepository;
-import jakarta.transaction.Transactional;
 import com.api.beerdispenser.Exceptions.InternalError;
 import com.api.beerdispenser.Exceptions.NotFound;
 
 
 @Service
-@Transactional
+
 public class ConsumptionServiceImpl {
 
     private final Logger log = LoggerFactory.getLogger(ConsumptionServiceImpl.class);
     @Autowired
     private ConsumptionRepository consumptionRepository;
-    @Autowired
-    DispensersServiceImpl dispensersServiceImpl;
 
-    public List<Consumption> listAllUsages() {
+    public List<Usage> listAllUsages() {
 
         try {
             return consumptionRepository.findAll();
@@ -34,8 +32,8 @@ public class ConsumptionServiceImpl {
             throw new InternalError(e.getMessage());
         }
     }
-    public List<Consumption> listAllByDispenserId(UUID id){
-        List<Consumption> usages;
+    public List<Usage> listAllByDispenserId(UUID id){
+        List<Usage> usages;
         try{
             usages = consumptionRepository.findByDispenserId(id);
         }catch(Exception e){
@@ -47,8 +45,8 @@ public class ConsumptionServiceImpl {
         return usages;
     }
 
-    public Consumption getInOpen(UUID id){
-        Consumption consumption;
+    public Usage getInOpen(UUID id){
+        Usage consumption;
         try{
             consumption = consumptionRepository.findOneWhereOpenAndByDispenser(id);
         }catch(Exception e){
@@ -62,9 +60,9 @@ public class ConsumptionServiceImpl {
     }
     
    
-    public Consumption createConsumption(Dispenser dispenser) {
+    public Usage createConsumption(Dispenser dispenser) {
         try {
-            Consumption newUsage = new Consumption(new Date(System.currentTimeMillis()));
+            Usage newUsage = new Usage(new Date(System.currentTimeMillis()));
             newUsage.setDispenser(dispenser);
             newUsage.setFlow_volume(dispenser.getFlow_volume());
             return consumptionRepository.save(newUsage);
@@ -74,26 +72,21 @@ public class ConsumptionServiceImpl {
         }
     }
 
-    public Consumption updateConsumption(Dispenser dispenser) {
-        Consumption consumption;
-        try {
-            consumption = consumptionRepository.findOneWhereOpenAndByDispenser(dispenser.get_id());;
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            throw new InternalError(e.getMessage());
-        }
+    @Transactional()
+    public Usage updateConsumption(Dispenser dispenser) {
+        Usage consumption=consumptionRepository.findOneWhereOpenAndByDispenser(dispenser.get_id());
         if(consumption.equals(null)){
             throw new NotFound("Usage not found");
         }
         try {
            consumption.setClose_at(new Date(System.currentTimeMillis()));
-           Long dif = consumption.getClose_at().getTime() - consumption.getOpen_at().getTime();
-           Integer seconds = (int) ( dif*(1.0/1000));
-           System.out.println(seconds);
-           Double value=dispenser.getFlow_volume()* seconds;
+           long dif = consumption.getClose_at().getTime() - consumption.getOpen_at().getTime();
+           int seconds = (int) ( dif*(1.0/1000));
+           Double value=(Double) dispenser.getFlow_volume()* seconds;
            consumption.setTotal_spent(value);
            return consumptionRepository.save(consumption);
         } catch (Exception e) {
+            log.error("ERROR {}",e);
             throw new InternalError(e.getMessage());
         }
 

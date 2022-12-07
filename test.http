@@ -9,7 +9,7 @@ Content-Type: application/json
 }
 
 ### crear consumo
-PUT http://localhost:8080/beer-tap-dispenser/dispenser/a567cf46-bc67-423d-a700-f2576943df4c/status HTTP/1.1
+PUT http://localhost:8080/beer-tap-dispenser/dispenser/9ce72248-a59f-423e-a38d-52140ae894b4/status HTTP/1.1
 Content-Type: application/json
 
 {
@@ -24,7 +24,7 @@ GET http://localhost:8080/test/usages HTTP/1.1
 GET http://localhost:8080/test/dispensers HTTP/1.1
 
 ### test add usage
-GET http://localhost:8080/beer-tap-dispenser/dispenser/39965dfd-c924-48a2-a640-d3c3b586cd76/spending HTTP/1.1
+GET http://localhost:8080/beer-tap-dispenser/dispenser/9ce72248-a59f-423e-a38d-52140ae894b4/spending HTTP/1.1
 
 
 

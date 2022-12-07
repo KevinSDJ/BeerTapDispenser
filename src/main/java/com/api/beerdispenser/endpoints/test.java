@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.api.beerdispenser.DTOS.newDispenser.requestDTO;
-import com.api.beerdispenser.entities.Consumption;
+import com.api.beerdispenser.entities.Usage;
 import com.api.beerdispenser.entities.Dispenser;
 import com.api.beerdispenser.services.impl.ConsumptionServiceImpl;
 import com.api.beerdispenser.services.impl.DispensersServiceImpl;
@@ -32,14 +32,14 @@ public class test {
         return ResponseEntity.ok(d);
     }
     @GetMapping("/usages")
-    public ResponseEntity<List<Consumption>> getUsages() throws Exception{
-        List<Consumption> usages= consumptionServiceImpl.listAllUsages();
+    public ResponseEntity<List<Usage>> getUsages() throws Exception{
+        List<Usage> usages= consumptionServiceImpl.listAllUsages();
         return ResponseEntity.ok(usages);
     }
     @PostMapping("/addusage")
-    public ResponseEntity<Consumption> addusage (){
+    public ResponseEntity<Usage> addusage (){
         Dispenser dispenser = dispensersServiceImpl.createDispenser(new requestDTO(0.542));
-        Consumption consumption = consumptionServiceImpl.createConsumption(dispenser);
+        Usage consumption = consumptionServiceImpl.createConsumption(dispenser);
         return ResponseEntity.ok(consumption);
     }
    

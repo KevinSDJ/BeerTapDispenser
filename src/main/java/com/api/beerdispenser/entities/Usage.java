@@ -2,6 +2,9 @@ package com.api.beerdispenser.entities;
 
 import java.io.Serializable;
 import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -12,26 +15,31 @@ import jakarta.persistence.ManyToOne;
 
 
 @Entity
-public class Consumption implements Serializable {
+public class Usage implements Serializable{
 
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long _id;
-    @Column(nullable = true)
+    @Column(nullable = false)
     private Date open_at;
     @Column(nullable = true)
     private Date close_at;
-    @Column(nullable= false)
     private Double flow_volume;
-    @Column(precision = 6)
     private Double total_spent=0.0;
     @ManyToOne()
     @JoinColumn(name="dispenser_id")
+    @JsonIgnore
     private Dispenser dispenser;
-    public Consumption(Date open_at) {
+    @ManyToOne()
+    @JsonIgnore
+    @JoinColumn(name="summary_id")
+    private Summary summary;
+    
+
+    public Usage(Date open_at) {
         this.open_at = open_at;
     }
-    public Consumption() {
+    public Usage() {
     }
     public Long get_id() {
         return _id;
@@ -58,7 +66,7 @@ public class Consumption implements Serializable {
         this.flow_volume = flow_volume;
     }
     public Double getTotal_spent() {
-        return Math.round(total_spent*1000)/1000.0;
+        return total_spent;
     }
     public void setTotal_spent(Double total_spent) {
         this.total_spent = total_spent;
@@ -69,12 +77,17 @@ public class Consumption implements Serializable {
     public void setDispenser(Dispenser dispenser) {
         this.dispenser = dispenser;
     }
+    public Summary getSummary() {
+        return summary;
+    }
+    public void setSummary(Summary summary) {
+        this.summary = summary;
+    }
     @Override
     public String toString() {
         return "Consumption [_id=" + _id + ", open_at=" + open_at + ", close_at=" + close_at + ", flow_volume="
-                + flow_volume + ", total_spent=" + total_spent + ", dispenser=" + dispenser + "]";
+                + flow_volume + ", total_spent=" + total_spent + ", dispenser=" + dispenser + ", summary=" + summary
+                + "]";
     }
-   
-
 
 }

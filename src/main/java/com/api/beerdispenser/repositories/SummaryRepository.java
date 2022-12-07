@@ -13,6 +13,6 @@ public interface SummaryRepository extends JpaRepository<Summary,Long> {
     @Query(value="SELECT EXISTS(SELECT TOP 1 FROM Summary AS s WHERE s.dispenser_id=:id );",nativeQuery=true)
     Boolean existSummary(@Param("id") UUID id);
 
-    @Query(value = "SELECT TOP 1 FROM Summary AS s WHERE s.dispenser_id=:id;" ,nativeQuery = true)
+    @Query(value = "SELECT TOP 1 * FROM Summary AS s WHERE s.dispenser_id=:id" ,nativeQuery = true)
     Summary findByDispenserId(@Param("id") UUID id);
 }

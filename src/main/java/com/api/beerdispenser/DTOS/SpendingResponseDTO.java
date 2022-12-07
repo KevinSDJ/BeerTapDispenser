@@ -1,6 +1,7 @@
 package com.api.beerdispenser.DTOS;
 
-import java.util.List;
-import com.api.beerdispenser.entities.Consumption;
 
-public record SpendingResponseDTO(Double amount,List<Consumption> usages) {}
+import java.util.Set;
+import com.api.beerdispenser.entities.Usage;
+
+public record SpendingResponseDTO(Double amount,Set<Usage> usages) {}

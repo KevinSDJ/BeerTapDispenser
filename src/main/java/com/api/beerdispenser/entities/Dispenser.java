@@ -27,8 +27,7 @@ public class Dispenser implements Serializable {
     private String status= "CLOSED";
     @JsonIgnore
     @OneToMany(mappedBy = "dispenser")
-    
-    private List<Consumption> usage= new ArrayList<>();
+    private List<Usage> usage= new ArrayList<>();
 
     
     public Dispenser(){}
@@ -53,10 +52,10 @@ public class Dispenser implements Serializable {
     public void setStatus(String status) {
         this.status = status;
     }
-    public List<Consumption> getUsage() {
+    public List<Usage> getUsage() {
         return usage;
     }
-    public void setUsage(List<Consumption> usage) {
+    public void setUsage(List<Usage> usage) {
         this.usage = usage;
     }
     @Override

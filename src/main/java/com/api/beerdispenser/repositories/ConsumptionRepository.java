@@ -6,16 +6,16 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import com.api.beerdispenser.entities.Consumption;
+import com.api.beerdispenser.entities.Usage;
 
 
 
 @Repository
-public interface ConsumptionRepository extends JpaRepository<Consumption,Long> {
+public interface ConsumptionRepository extends JpaRepository<Usage,Long> {
 
     @Query(value="SELECT TOP 1 * FROM  Consumption AS c WHERE (c.close_at IS NULL) AND c.dispenser_id=:id", nativeQuery = true)
-    Consumption findOneWhereOpenAndByDispenser(@Param("id") UUID id);
+    Usage findOneWhereOpenAndByDispenser(@Param("id") UUID id);
 
     @Query(value="SELECT * FROM Consumption AS c WHERE c.dispenser_id=:id ;",nativeQuery = true)
-    List<Consumption> findByDispenserId(@Param("id") UUID id);
+    List<Usage> findByDispenserId(@Param("id") UUID id);
 }

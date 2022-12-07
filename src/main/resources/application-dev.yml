@@ -8,8 +8,9 @@ spring:
     hibernate:
       ddl-auto: create-drop
     show-sql: false
-    open-in-view: false
+    open-in-view: true
     database: h2
+    
 server:
   servlet:
     context-path: /
