@@ -8,28 +8,28 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.api.beerdispenser.entities.Usage;
-import com.api.beerdispenser.entities.Dispenser;
-import com.api.beerdispenser.repositories.ConsumptionRepository;
-import com.api.beerdispenser.Exceptions.InternalError;
-import com.api.beerdispenser.Exceptions.NotFound;
+import com.api.beerdispenser.entity.Usage;
+import com.api.beerdispenser.entity.Dispenser;
+import org.slf4j.Marker;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
+import com.api.beerdispenser.repositories.UsageRepository;
 
 
 @Service
+public class UsageServiceImpl {
 
-public class ConsumptionServiceImpl {
-
-    private final Logger log = LoggerFactory.getLogger(ConsumptionServiceImpl.class);
+    private final Logger log = LoggerFactory.getLogger(UsageServiceImpl.class);
     @Autowired
-    private ConsumptionRepository consumptionRepository;
+    private UsageRepository consumptionRepository;
 
     public List<Usage> listAllUsages() {
 
         try {
             return consumptionRepository.findAll();
         } catch (Exception e) {
-            log.info(e.getMessage());
-            throw new InternalError(e.getMessage());
+            log.error(Marker.ANY_MARKER, "Error {}",e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,e.getMessage());
         }
     }
     public List<Usage> listAllByDispenserId(UUID id){
@@ -37,10 +37,11 @@ public class ConsumptionServiceImpl {
         try{
             usages = consumptionRepository.findByDispenserId(id);
         }catch(Exception e){
-            throw new InternalError("Error api process"); 
+            log.error(Marker.ANY_MARKER, "Error {}",e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,e.getMessage());
         }
         if(usages.equals(null)){
-            throw new NotFound("Dispensers not find");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         return usages;
     }
@@ -50,11 +51,12 @@ public class ConsumptionServiceImpl {
         try{
             consumption = consumptionRepository.findOneWhereOpenAndByDispenser(id);
         }catch(Exception e){
-            throw new InternalError(e.getMessage());
+            log.error(Marker.ANY_MARKER, "Error {}",e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
         log.info(consumption.toString());
         if(consumption.equals(null)){
-            throw new NotFound("Not find usage open");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         return consumption;
     }
@@ -67,8 +69,8 @@ public class ConsumptionServiceImpl {
             newUsage.setFlow_volume(dispenser.getFlow_volume());
             return consumptionRepository.save(newUsage);
         } catch (Exception e) {
-            log.error(e.getMessage());
-            throw new InternalError("Fail to create usage");
+            log.error(Marker.ANY_MARKER, "Error {}",e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -76,7 +78,7 @@ public class ConsumptionServiceImpl {
     public Usage updateConsumption(Dispenser dispenser) {
         Usage consumption=consumptionRepository.findOneWhereOpenAndByDispenser(dispenser.get_id());
         if(consumption.equals(null)){
-            throw new NotFound("Usage not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         try {
            consumption.setClose_at(new Date(System.currentTimeMillis()));
@@ -86,8 +88,8 @@ public class ConsumptionServiceImpl {
            consumption.setTotal_spent(value);
            return consumptionRepository.save(consumption);
         } catch (Exception e) {
-            log.error("ERROR {}",e);
-            throw new InternalError(e.getMessage());
+            log.error(Marker.ANY_MARKER, "Error {}",e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }

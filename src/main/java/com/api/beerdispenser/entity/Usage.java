@@ -1,10 +1,10 @@
-package com.api.beerdispenser.entities;
+package com.api.beerdispenser.entity;
 
 import java.io.Serializable;
 import java.util.Date;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.annotation.Nonnull;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -12,18 +12,25 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 
 
 @Entity
+@Schema
+@Table(name="usage")
 public class Usage implements Serializable{
 
+    @JsonIgnore
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long _id;
     @Column(nullable = false)
+    @NotBlank
     private Date open_at;
     @Column(nullable = true)
     private Date close_at;
+    @Nonnull
     private Double flow_volume;
     private Double total_spent=0.0;
     @ManyToOne()
@@ -41,6 +48,7 @@ public class Usage implements Serializable{
     }
     public Usage() {
     }
+    @JsonIgnore
     public Long get_id() {
         return _id;
     }

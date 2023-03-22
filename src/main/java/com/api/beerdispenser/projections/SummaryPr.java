@@ -2,7 +2,7 @@ package com.api.beerdispenser.projections;
 
 import java.util.Set;
 
-import com.api.beerdispenser.entities.Usage;
+import com.api.beerdispenser.entity.Usage;
 
 public interface SummaryPr {
     Double getTotal_amount();

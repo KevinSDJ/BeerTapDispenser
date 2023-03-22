@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import com.api.beerdispenser.entities.Summary;
+import com.api.beerdispenser.entity.Summary;
 
 @Repository
 public interface SummaryRepository extends JpaRepository<Summary,Long> {

@@ -1,22 +1,24 @@
-package com.api.beerdispenser.entities;
+package com.api.beerdispenser.entity;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
-
+import java.util.ArrayList;
+import java.util.Collection;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name="summary")
 public class Summary implements Serializable{
 
+    @JsonIgnore
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long _id;
@@ -25,8 +27,8 @@ public class Summary implements Serializable{
     @OneToOne
     @JoinColumn(name="dispenser_id")
     private Dispenser dispenser;
-    @OneToMany(mappedBy = "summary")
-    private Set<Usage> usages= new HashSet<>();
+    @OneToMany(mappedBy = "summary",fetch = FetchType.EAGER)
+    private Collection<Usage> usages= new ArrayList<>();
     
     public Summary(){}
 
@@ -50,11 +52,11 @@ public class Summary implements Serializable{
         this.dispenser = dispenser;
     }
 
-    public Set<Usage> getUsages() {
+    public Collection<Usage> getUsages() {
         return usages;
     }
 
-    public void setUsages(Set<Usage> usages) {
+    public void setUsages(Collection<Usage> usages) {
         this.usages = usages;
     }
 

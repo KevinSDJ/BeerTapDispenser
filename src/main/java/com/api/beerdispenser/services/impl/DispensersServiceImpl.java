@@ -1,6 +1,5 @@
 package com.api.beerdispenser.services.impl;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -8,12 +7,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.api.beerdispenser.DTOS.newDispenser.requestDTO;
-import com.api.beerdispenser.entities.Dispenser;
+import com.api.beerdispenser.dto.newDispenser.requestDTO;
+import com.api.beerdispenser.entity.Dispenser;
+import com.api.beerdispenser.entity.Status;
 import com.api.beerdispenser.repositories.BeerDispenserRepository;
-import com.api.beerdispenser.Exceptions.BadRequest;
-import com.api.beerdispenser.Exceptions.InternalError;
-import com.api.beerdispenser.Exceptions.NotFound;
+import org.slf4j.Marker;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class DispensersServiceImpl {
@@ -22,65 +22,66 @@ public class DispensersServiceImpl {
     @Autowired
     private BeerDispenserRepository dispenserRepository;
 
-    public Dispenser createDispenser(requestDTO dispenser) {
+    public Dispenser createDispenser(requestDTO dispenser){
         try {
             Dispenser newdispenser = new Dispenser(dispenser.flow_amount());
-
             return dispenserRepository.save(newdispenser);
 
         } catch (Exception e) {
-            log.error(e.getMessage());
-            throw new InternalError("fail to create dispenser");
+            log.error(Marker.ANY_MARKER, "Error {}",e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    public List<Dispenser> getAllDispensers() {
+    public List<Dispenser> getAllDispensers() throws ResponseStatusException {
         try {
             return dispenserRepository.findAll();
         } catch (Exception e) {
-            throw new InternalError(e.getMessage());
+            log.error(Marker.ANY_MARKER, "Error {}",e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    public Dispenser findOneDispenser(UUID id) {
+    public Dispenser findOneDispenser(UUID id) throws ResponseStatusException{
         Optional<Dispenser> dispenser = null;
         try {
             dispenser = dispenserRepository.findById(id);
         } catch (Exception e) {
-            log.error(e.getMessage());
-            throw new InternalError("Fail api Transaction");
+            log.error(Marker.ANY_MARKER, "Error {}",e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
         if (dispenser.isPresent()) {
             return dispenser.get();
         } else {
-            throw new NotFound("Dispenser not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
     }
 
-    public Dispenser updateState(UUID id, String status) {
+    public Dispenser updateState(UUID id, String status) throws ResponseStatusException {
 
-        String[] statusvalues = { "OPEN", "CLOSED" };
-        boolean contains = Arrays.stream(statusvalues).anyMatch(status::equals);
+        try{
+            Status.valueOf(status);
+        }catch(Exception ex){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Bad indication");
+        }
 
-        if (!contains) {
-            throw new BadRequest("Mmm nop,refresh your memory");
+        if (Status.OPEN.getValue().equals(status)&& isOpen(id)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Dispenser already open");
         }
-        if (status.toUpperCase().equals("OPEN") && isOpen(id)) {
-            throw new BadRequest("dispenser already open");
-        }
-        if (status.toUpperCase().equals("CLOSED") && !isOpen(id)) {
-            throw new BadRequest("dispenser already closed");
+        if (Status.CLOSE.getValue().equals(status) && !isOpen(id)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"dispenser already close");
         }
         Optional<Dispenser> dispenser;
         try {
             dispenser = dispenserRepository.findById(id);
         } catch (Exception e) {
-            throw new InternalError(e.getMessage());
+            log.error(Marker.ANY_MARKER, "Error {}",e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
         if (dispenser.isEmpty()) {
-            throw new NotFound("Dispenser not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         } else {
-            dispenser.get().setStatus(status);
+            dispenser.get().setStatus(Status.valueOf(status).getValue());
             return dispenserRepository.save(dispenser.get());
         }
     }

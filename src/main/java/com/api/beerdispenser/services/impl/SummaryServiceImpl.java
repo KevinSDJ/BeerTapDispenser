@@ -1,17 +1,19 @@
 package com.api.beerdispenser.services.impl;
 
+import com.api.beerdispenser.entity.Dispenser;
+import com.api.beerdispenser.entity.Summary;
+import com.api.beerdispenser.entity.Usage;
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.api.beerdispenser.Exceptions.NotFound;
-import com.api.beerdispenser.entities.Usage;
-import com.api.beerdispenser.entities.Dispenser;
-import com.api.beerdispenser.entities.Summary;
 import com.api.beerdispenser.repositories.SummaryRepository;
+import org.slf4j.Marker;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 
 @Service
@@ -30,7 +32,7 @@ public class SummaryServiceImpl {
             summaryRepository.save(summary);
         }catch(Exception e){
             System.out.println(e);
-            throw new InternalError("Fail api process");
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }
@@ -38,17 +40,17 @@ public class SummaryServiceImpl {
     public void updateSummary(Usage consumption,UUID dispenserId){
         Summary summary = findSummary(dispenserId);
         if(summary.equals(null)){
-            throw new NotFound("Summary not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         summary.setTotal_amount(summary.getTotal_amount()+consumption.getTotal_spent());
-        Set<Usage> usages=summary.getUsages();
+        Collection<Usage> usages=summary.getUsages();
         usages.add(consumption);
         summary.setUsages(usages);
         try{
             summaryRepository.save(summary);
-        }catch(Exception error){
-            log.error("Error api {}",error);
-            throw new InternalError("Fail api process");
+        }catch(Exception e){
+            log.error(Marker.ANY_MARKER, "Error {}",e);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }    
     }
 
@@ -60,7 +62,7 @@ public class SummaryServiceImpl {
         try{
             return summaryRepository.findByDispenserId(id);
         }catch(Exception e){
-            log.error(e.getMessage());
+            log.error(Marker.ANY_MARKER, "Error {}",e);
             throw new InternalError("Error api process");
         }
     }

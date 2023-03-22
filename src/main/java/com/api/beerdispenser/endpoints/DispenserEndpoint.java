@@ -3,16 +3,12 @@ package com.api.beerdispenser.endpoints;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.api.beerdispenser.DTOS.SpendingResponseDTO;
-import com.api.beerdispenser.DTOS.StatusRequestDTO;
-import com.api.beerdispenser.DTOS.newDispenser.requestDTO;
-import com.api.beerdispenser.DTOS.newDispenser.responseDTO;
-import com.api.beerdispenser.entities.Usage;
-import com.api.beerdispenser.entities.Dispenser;
-import com.api.beerdispenser.entities.Summary;
-
-import com.api.beerdispenser.services.impl.ConsumptionServiceImpl;
+import com.api.beerdispenser.dto.StatusRequestDTO;
+import com.api.beerdispenser.dto.newDispenser.requestDTO;
+import com.api.beerdispenser.entity.Dispenser;
+import com.api.beerdispenser.entity.Summary;
+import com.api.beerdispenser.entity.Usage;
+import com.api.beerdispenser.services.impl.UsageServiceImpl;
 import com.api.beerdispenser.services.impl.DispensersServiceImpl;
 import com.api.beerdispenser.services.impl.SummaryServiceImpl;
 import java.util.UUID;
@@ -30,17 +26,17 @@ public class DispenserEndpoint {
     @Autowired
     private DispensersServiceImpl dispensersServiceImpl;
     @Autowired 
-    private ConsumptionServiceImpl consumptionServiceImpl;
+    private UsageServiceImpl consumptionServiceImpl;
     @Autowired
     private SummaryServiceImpl summaryServiceImpl;
 
-    @PostMapping("/dispenser")
-    public ResponseEntity<responseDTO> newDispenser(@RequestBody requestDTO dispenser) throws Exception{
+    @PostMapping("/dispensers")
+    public ResponseEntity<Dispenser> newDispenser(@RequestBody requestDTO dispenser) throws Exception{
         Dispenser s= dispensersServiceImpl.createDispenser(dispenser);
         summaryServiceImpl.createSummary(s);
-        return ResponseEntity.ok(new responseDTO(s.get_id(),s.getFlow_volume()));
+        return ResponseEntity.ok(s);
     }
-    @PutMapping("/dispenser/{id}/status")  
+    @PutMapping("/dispensers/{id}/status")  
     public ResponseEntity<String> generateUsageDispenser(@PathVariable(name = "id") UUID id,@RequestBody StatusRequestDTO status) throws Exception{
         Dispenser dispenser = dispensersServiceImpl.updateState(id, status.status());
         Usage consumption=null;
@@ -53,13 +49,13 @@ public class DispenserEndpoint {
         }
         
         
-        return ResponseEntity.ok("Success");
+        return ResponseEntity.status(202).build();
     }
-    @GetMapping("/dispenser/{id}/spending")
-    public ResponseEntity<SpendingResponseDTO> getSpending(@PathVariable(name="id") UUID id){
+    @GetMapping("/dispensers/{id}/spending")
+    public ResponseEntity<Summary> getSpending(@PathVariable(name="id") UUID id){
         Summary summary=summaryServiceImpl.findSummary(id);
-        SpendingResponseDTO spending= new SpendingResponseDTO(summary.getTotal_amount(),summary.getUsages());
-        return ResponseEntity.ok(spending);
+        
+        return ResponseEntity.ok(summary);
     }
     
 }

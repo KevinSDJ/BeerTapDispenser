@@ -1,4 +1,4 @@
-package com.api.beerdispenser.entities;
+package com.api.beerdispenser.entity;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -11,11 +11,14 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
 
 @Entity
+@Table(name="dispenser")
 public class Dispenser implements Serializable {
 
+    @JsonIgnore
     @Id
     @GeneratedValue(generator = "uuid4")
     @GenericGenerator(name="uuid2",strategy = "uuid4")
