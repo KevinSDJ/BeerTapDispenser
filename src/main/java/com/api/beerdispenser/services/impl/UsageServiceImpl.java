@@ -65,7 +65,7 @@ public class UsageServiceImpl {
     public Usage createConsumption(Dispenser dispenser) {
         try {
             Usage newUsage = new Usage(new Date(System.currentTimeMillis()));
-            newUsage.setDispenser(dispenser);
+            //newUsage.setDispenser(dispenser);
             newUsage.setFlow_volume(dispenser.getFlow_volume());
             return consumptionRepository.save(newUsage);
         } catch (Exception e) {

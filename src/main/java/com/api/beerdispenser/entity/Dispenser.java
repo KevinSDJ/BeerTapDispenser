@@ -2,19 +2,23 @@ package com.api.beerdispenser.entity;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 import java.util.UUID;
 import org.hibernate.annotations.GenericGenerator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-
+import jakarta.validation.constraints.NotNull;
 
 @Entity
+@Schema
 @Table(name="dispenser")
 public class Dispenser implements Serializable {
 
@@ -24,19 +28,17 @@ public class Dispenser implements Serializable {
     @GenericGenerator(name="uuid2",strategy = "uuid4")
     @Column(nullable = false)
     private UUID _id;
-    @Column(nullable=false)
+    @NotNull
     private Double flow_volume;
-    @Column(nullable = false)
+    @NotNull
     private String status= "CLOSED";
     @JsonIgnore
-    @OneToMany(mappedBy = "dispenser")
-    private List<Usage> usage= new ArrayList<>();
+    @OneToMany(mappedBy = "dispenser",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    private Collection<Usage> usage= new ArrayList<>();
 
-    
     public Dispenser(){}
-    public Dispenser(Double flow_volume){
-        this.flow_volume=flow_volume;
-    }
+
+
     public UUID get_id() {
         return _id;
     }
@@ -55,10 +57,10 @@ public class Dispenser implements Serializable {
     public void setStatus(String status) {
         this.status = status;
     }
-    public List<Usage> getUsage() {
+    public Collection<Usage> getUsage() {
         return usage;
     }
-    public void setUsage(List<Usage> usage) {
+    public void setUsage(Collection<Usage> usage) {
         this.usage = usage;
     }
     @Override

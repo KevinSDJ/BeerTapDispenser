@@ -43,9 +43,9 @@ public class SummaryServiceImpl {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         summary.setTotal_amount(summary.getTotal_amount()+consumption.getTotal_spent());
-        Collection<Usage> usages=summary.getUsages();
+        Collection<Usage> usages=summary.getDispenser().getUsage();
         usages.add(consumption);
-        summary.setUsages(usages);
+        summary.setDispenser(summary.getDispenser());;
         try{
             summaryRepository.save(summary);
         }catch(Exception e){
