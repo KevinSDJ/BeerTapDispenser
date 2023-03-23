@@ -41,7 +41,7 @@ public class DispenserEndpoint {
     }
     @GetMapping("/dispensers/{id}/spending")
     public ResponseEntity<Summary> getSpending(@PathVariable(name="id") UUID id){
-        Summary summary=summaryServiceImpl.findSummary(id);
+        Summary summary=summaryServiceImpl.getSummary(id);
         
         return ResponseEntity.ok(summary);
     }

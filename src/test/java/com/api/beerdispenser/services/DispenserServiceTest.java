@@ -108,10 +108,13 @@ public class DispenserServiceTest {
         
         Dispenser dispenser = dispensersServiceImpl.findById(id);
         Usage usage= dispenser.getUsage().stream().findFirst().get();
-        System.out.println(usage.toString());
-
+        
         assertEquals(true, usage!=null && usage.getClose_at()!=null,"Expected true usage exist and closed correctly");
         
+    }
+
+    public static UUID getValueTemp(){
+        return id;
     }
 
     

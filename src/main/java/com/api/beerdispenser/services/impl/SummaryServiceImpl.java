@@ -2,8 +2,6 @@ package com.api.beerdispenser.services.impl;
 
 import com.api.beerdispenser.entity.Dispenser;
 import com.api.beerdispenser.entity.Summary;
-import com.api.beerdispenser.entity.Usage;
-import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 import org.slf4j.Logger;
@@ -12,9 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.api.beerdispenser.repositories.SummaryRepository;
 import org.slf4j.Marker;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
-
 
 @Service
 public class SummaryServiceImpl {
@@ -23,44 +18,43 @@ public class SummaryServiceImpl {
     
     @Autowired
     private SummaryRepository summaryRepository;
+    @Autowired
+    private DispensersServiceImpl dispensersService;
 
-    public void createSummary(Dispenser dispenser){
-        Summary summary = new Summary();
-        summary.setDispenser(dispenser);
+    public Summary getSummary(UUID id){
+
+        Boolean exist= existSummary(id);
         
-        try{
-            summaryRepository.save(summary);
-        }catch(Exception e){
-            System.out.println(e);
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
+        Summary summ=exist?findAndUpdate(id):updateSummary(id);
+       
+        return summ;
     }
 
-    public void updateSummary(Usage consumption,UUID dispenserId){
-        Summary summary = findSummary(dispenserId);
-        if(summary.equals(null)){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-        summary.setTotal_amount(summary.getTotal_amount()+consumption.getTotal_spent());
-        Collection<Usage> usages=summary.getDispenser().getUsage();
-        usages.add(consumption);
-        summary.setDispenser(summary.getDispenser());;
-        try{
-            summaryRepository.save(summary);
-        }catch(Exception e){
-            log.error(Marker.ANY_MARKER, "Error {}",e);
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }    
+    public Summary updateSummary(UUID id){
+        Double total=0.0;
+        Dispenser dispenser= dispensersService.findById(id);
+        Summary newSummary = new Summary();
+        total=dispenser.getUsage().stream()
+            .map(e->e.getTotal_spent())
+            .reduce((acc,number)->{ return acc+ number;}).get();
+        newSummary.setTotal_amount(total);
+        newSummary.setDispenser(dispenser);
+        return summaryRepository.save(newSummary);
     }
 
     public Boolean existSummary(UUID id){
         return summaryRepository.existSummary(id);
     }
      
-    public Summary findSummary(UUID id){
+    public Summary findAndUpdate(UUID id){
+        Double total=0.0;
         try{
-            return summaryRepository.findByDispenserId(id);
+            Summary summary=summaryRepository.findByDispenserId(id);
+            total=summary.getDispenser().getUsage().stream()
+            .map(e->e.getTotal_spent())
+            .reduce((acc,number)->{ return acc+ number;}).get();
+            summary.setTotal_amount(total);
+            return summaryRepository.save(summary);
         }catch(Exception e){
             log.error(Marker.ANY_MARKER, "Error {}",e);
             throw new InternalError("Error api process");
