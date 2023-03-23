@@ -1,6 +1,10 @@
 package com.api.beerdispenser.entity;
 
 import java.io.Serializable;
+import java.util.Date;
+
+import org.hibernate.annotations.CreationTimestamp;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Entity;
@@ -21,6 +25,8 @@ public class Summary implements Serializable{
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
     private Double total_amount=0.0;
+    @CreationTimestamp
+    private Date last_update;
     @JsonIgnore
     @OneToOne
     @JoinColumn(name="dispenser_id")
@@ -50,6 +56,9 @@ public class Summary implements Serializable{
 
     public void setDispenser(Dispenser dispenser) {
         this.dispenser = dispenser;
+    }
+    public Date getLast_update(){
+        return last_update;
     }
 
     @Override

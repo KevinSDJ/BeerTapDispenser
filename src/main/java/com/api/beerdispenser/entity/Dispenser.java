@@ -7,7 +7,6 @@ import java.util.UUID;
 import org.hibernate.annotations.GenericGenerator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -30,7 +29,7 @@ public class Dispenser implements Serializable {
     private Double flow_volume;
     private String status= "CLOSED";
     @JsonIgnore
-    @OneToMany(mappedBy = "dispenser",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "dispenser",fetch = FetchType.EAGER)
     private Collection<Usage> usage= new ArrayList<>();
 
     public Dispenser(){}

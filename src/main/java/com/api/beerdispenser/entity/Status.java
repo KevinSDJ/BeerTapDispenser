@@ -1,21 +1,20 @@
 package com.api.beerdispenser.entity;
 
+import java.util.stream.Stream;
 
 public enum Status {
-    OPEN(1,"open"),CLOSE(2,"close");
-
-    private int key;
+    OPEN("open"),CLOSE("close");
     private String value;
-    Status(int key,String value){
-        this.key=key;
+    Status(String value) {
         this.value=value;
     }
-
-    public int getKey(){
-        return this.key;
-    }
     public String getValue(){
-        return this.value;
+        return value;
     }
-
+    public static Boolean containValue(String value){
+        return Stream.of(values()).anyMatch(e-> e.name().equalsIgnoreCase(value));
+    }
+    public static String getValue(String value){
+        return valueOf(value.toUpperCase()).getValue();
+    }
 }

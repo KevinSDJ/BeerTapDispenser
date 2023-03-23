@@ -7,9 +7,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import com.api.beerdispenser.entity.Usage;
+import com.api.beerdispenser.exception.InternalServerError;
 import com.api.beerdispenser.entity.Dispenser;
+import com.api.beerdispenser.entity.Status;
 import org.slf4j.Marker;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
@@ -21,12 +22,12 @@ public class UsageServiceImpl {
 
     private final Logger log = LoggerFactory.getLogger(UsageServiceImpl.class);
     @Autowired
-    private UsageRepository consumptionRepository;
+    private UsageRepository usageRepository;
 
     public List<Usage> listAllUsages() {
 
         try {
-            return consumptionRepository.findAll();
+            return usageRepository.findAll();
         } catch (Exception e) {
             log.error(Marker.ANY_MARKER, "Error {}",e);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,e.getMessage());
@@ -35,7 +36,7 @@ public class UsageServiceImpl {
     public List<Usage> listAllByDispenserId(UUID id){
         List<Usage> usages;
         try{
-            usages = consumptionRepository.findByDispenserId(id);
+            usages = usageRepository.findByDispenserId(id);
         }catch(Exception e){
             log.error(Marker.ANY_MARKER, "Error {}",e);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,e.getMessage());
@@ -46,51 +47,36 @@ public class UsageServiceImpl {
         return usages;
     }
 
-    public Usage getInOpen(UUID id){
-        Usage consumption;
-        try{
-            consumption = consumptionRepository.findOneWhereOpenAndByDispenser(id);
-        }catch(Exception e){
-            log.error(Marker.ANY_MARKER, "Error {}",e);
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+    public Dispenser updateUsage(Dispenser dispenser) throws RuntimeException {
+        
+        Usage usage= null;
+        if(dispenser.getStatus().equals(Status.OPEN.getValue())){
+            usage = new Usage();
+            usage.setFlow_volume(dispenser.getFlow_volume());
+            usage.setOpen_at(new Date(System.currentTimeMillis()));
+            dispenser.getUsage().add(usage);
+            usage.setDispenser(dispenser);
+            try{
+                usageRepository.save(usage);
+            }catch(Exception ex){
+                ex.printStackTrace();
+                throw new InternalServerError();
+            }
+            return dispenser;
+        }else{
+            usage= usageRepository.findOneWhereOpenAndByDispenser(dispenser.get_id());
+            dispenser.getUsage().remove(usage);
+            usage.setClose_at(new Date(System.currentTimeMillis()+3300));
+            long dif = usage.getClose_at().getTime() - usage.getOpen_at().getTime();
+            int seconds = (int) ( dif*(1.0/1000));
+            usage.setTotal_spent( (Double) (dispenser.getFlow_volume()* seconds));
+            try{
+                dispenser.getUsage().add(usageRepository.saveAndFlush(usage));
+            }catch(Exception ex){
+                ex.printStackTrace();
+                throw new InternalServerError();
+            }
+            return dispenser;
         }
-        log.info(consumption.toString());
-        if(consumption.equals(null)){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-        return consumption;
-    }
-    
-   
-    public Usage createConsumption(Dispenser dispenser) {
-        try {
-            Usage newUsage = new Usage(new Date(System.currentTimeMillis()));
-            //newUsage.setDispenser(dispenser);
-            newUsage.setFlow_volume(dispenser.getFlow_volume());
-            return consumptionRepository.save(newUsage);
-        } catch (Exception e) {
-            log.error(Marker.ANY_MARKER, "Error {}",e);
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @Transactional()
-    public Usage updateConsumption(Dispenser dispenser) {
-        Usage consumption=consumptionRepository.findOneWhereOpenAndByDispenser(dispenser.get_id());
-        if(consumption.equals(null)){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-        try {
-           consumption.setClose_at(new Date(System.currentTimeMillis()));
-           long dif = consumption.getClose_at().getTime() - consumption.getOpen_at().getTime();
-           int seconds = (int) ( dif*(1.0/1000));
-           Double value=(Double) dispenser.getFlow_volume()* seconds;
-           consumption.setTotal_spent(value);
-           return consumptionRepository.save(consumption);
-        } catch (Exception e) {
-            log.error(Marker.ANY_MARKER, "Error {}",e);
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
     }
 }

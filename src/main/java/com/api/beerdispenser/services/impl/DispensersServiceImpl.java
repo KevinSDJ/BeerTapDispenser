@@ -8,7 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.api.beerdispenser.dto.DispenserDTO;
+import com.api.beerdispenser.dto.dispenser.RequestDispenserDTO;
+import com.api.beerdispenser.dto.dispenser.ResponseDispenserDTO;
 import com.api.beerdispenser.entity.Dispenser;
 import com.api.beerdispenser.entity.Status;
 import com.api.beerdispenser.exception.BadRequest;
@@ -25,35 +26,36 @@ public class DispensersServiceImpl {
 
     @Autowired
     private BeerDispenserRepository dispenserRepository;
+    @Autowired
+    private UsageServiceImpl usageServiceImpl;
 
-    public Dispenser createDispenser(DispenserDTO dispenser) throws BadRequest,InternalServerError{
+    public Dispenser create(RequestDispenserDTO dispenser) throws BadRequest,InternalServerError{
         if(dispenser.flow_volume()==null){
-            throw new BadRequest("flow volume required");
+            throw new BadRequest("flow volume price required");
         }
 
         try {
             Dispenser newdispenser = new Dispenser();
             newdispenser.setFlow_volume(dispenser.flow_volume());
             return dispenserRepository.save(newdispenser);
-
         } catch (Exception e) {
             log.error(Marker.ANY_MARKER, "Error ",e.getMessage());
             throw new InternalServerError();
         }
     }
 
-    public List<DispenserDTO> getAllDispensers(){
+    public List<ResponseDispenserDTO> getAll(){
         try {
             return dispenserRepository.findAll()
             .stream()
-            .map(d->new DispenserDTO(d.get_id(),d.getFlow_volume())).collect(Collectors.toList());
+            .map(d->new ResponseDispenserDTO(d.get_id(),d.getFlow_volume())).collect(Collectors.toList());
         } catch (Exception e) {
             log.error(Marker.ANY_MARKER, "Error {}",e);
             throw new InternalError(e.getMessage());
         }
     }
 
-    public Dispenser findOneDispenser(UUID id) throws RuntimeException{
+    public Dispenser findById(UUID id) throws RuntimeException{
         Optional<Dispenser> dispenser = null;
         try {
             dispenser = dispenserRepository.findById(id);
@@ -70,37 +72,30 @@ public class DispensersServiceImpl {
 
     public Dispenser updateState(UUID id, String status) throws RuntimeException {
 
+        Boolean isValidStatus= Status.containValue(status);
+        if(!isValidStatus){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Bad indication,chose open/close");
+        }
+
+        Dispenser dispenser = dispenserRepository.findById(id).get();
+
+        if (dispenser==null)throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+
+        if(dispenser.getStatus().equals(status)){
+            throw new BadRequest("Dispenser already "+status);
+        }
+        dispenser.setStatus(Status.getValue(status));
         try{
-            Status.valueOf(status);
+            dispenser= usageServiceImpl.updateUsage(dispenser);
         }catch(Exception ex){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Bad indication");
+            log.error("Error: ", ex.getMessage());
         }
 
-        if (Status.OPEN.getValue().equals(status)&& isOpen(id)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Dispenser already open");
-        }
-        if (Status.CLOSE.getValue().equals(status) && !isOpen(id)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"dispenser already close");
-        }
-        Optional<Dispenser> dispenser;
-        try {
-            dispenser = dispenserRepository.findById(id);
-        } catch (Exception e) {
-            log.error(Marker.ANY_MARKER, "Error {}",e);
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        if (dispenser.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        } else {
-            dispenser.get().setStatus(Status.valueOf(status).getValue());
-            return dispenserRepository.save(dispenser.get());
-        }
+        return dispenser!=null?
+        dispenserRepository.save(dispenser)
+        :dispenserRepository.findById(id).get();
+
+         
     }
 
-    public Boolean isOpen(UUID id) {
-
-        return dispenserRepository.isOpen(id);
-    }
-
-   
 }

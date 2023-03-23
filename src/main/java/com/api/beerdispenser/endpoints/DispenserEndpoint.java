@@ -3,11 +3,11 @@ package com.api.beerdispenser.endpoints;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.api.beerdispenser.dto.DispenserDTO;
+import com.api.beerdispenser.dto.dispenser.ReqStatusDispenserDTO;
+import com.api.beerdispenser.dto.dispenser.RequestDispenserDTO;
+import com.api.beerdispenser.dto.dispenser.ResponseDispenserDTO;
 import com.api.beerdispenser.entity.Dispenser;
 import com.api.beerdispenser.entity.Summary;
-import com.api.beerdispenser.entity.Usage;
-import com.api.beerdispenser.services.impl.UsageServiceImpl;
 import com.api.beerdispenser.services.impl.DispensersServiceImpl;
 import com.api.beerdispenser.services.impl.SummaryServiceImpl;
 import java.util.UUID;
@@ -24,31 +24,19 @@ public class DispenserEndpoint {
 
     @Autowired
     private DispensersServiceImpl dispensersServiceImpl;
-    @Autowired 
-    private UsageServiceImpl consumptionServiceImpl;
     @Autowired
     private SummaryServiceImpl summaryServiceImpl;
 
     @PostMapping("/dispensers")
-    public ResponseEntity<DispenserDTO> newDispenser(@RequestBody DispenserDTO dispenser) throws Exception{
-        Dispenser s= dispensersServiceImpl.createDispenser(dispenser);
-        return ResponseEntity.ok( new DispenserDTO(s.get_id(),s.getFlow_volume()));
+    public ResponseEntity<ResponseDispenserDTO> newDispenser(@RequestBody RequestDispenserDTO dispenser) throws Exception{
+        Dispenser s= dispensersServiceImpl.create(dispenser);
+        return ResponseEntity.ok( new ResponseDispenserDTO(s.get_id(),s.getFlow_volume()));
     }
 
     
     @PutMapping("/dispensers/{id}/status")  
-    public ResponseEntity<String> generateUsageDispenser(@PathVariable(name = "id") UUID id,@RequestBody DispenserDTO status) throws Exception{
-        Dispenser dispenser = dispensersServiceImpl.updateState(id, status.status());
-        Usage consumption=null;
-        if(dispenser.getStatus().equals("OPEN")){
-            consumptionServiceImpl.createConsumption(dispenser);
-        }
-        if(dispenser.getStatus().equals("CLOSED")){
-            consumption =consumptionServiceImpl.updateConsumption(dispenser);
-            summaryServiceImpl.updateSummary(consumption, id);
-        }
-        
-        
+    public ResponseEntity<String> generateUsageDispenser(@PathVariable(name = "id") UUID id,@RequestBody ReqStatusDispenserDTO status) throws Exception{
+        dispensersServiceImpl.updateState(id, status.status());
         return ResponseEntity.status(202).build();
     }
     @GetMapping("/dispensers/{id}/spending")
