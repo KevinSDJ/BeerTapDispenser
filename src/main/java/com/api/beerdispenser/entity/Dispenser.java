@@ -15,7 +15,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Schema
@@ -28,9 +27,7 @@ public class Dispenser implements Serializable {
     @GenericGenerator(name="uuid2",strategy = "uuid4")
     @Column(nullable = false)
     private UUID _id;
-    @NotNull
     private Double flow_volume;
-    @NotNull
     private String status= "CLOSED";
     @JsonIgnore
     @OneToMany(mappedBy = "dispenser",fetch = FetchType.EAGER,cascade = CascadeType.ALL)

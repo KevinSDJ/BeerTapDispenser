@@ -31,7 +31,6 @@ public class DispenserEndpoint {
 
     @PostMapping("/dispensers")
     public ResponseEntity<DispenserDTO> newDispenser(@RequestBody DispenserDTO dispenser) throws Exception{
-        System.out.println(dispenser.flow_volume());
         Dispenser s= dispensersServiceImpl.createDispenser(dispenser);
         return ResponseEntity.ok( new DispenserDTO(s.get_id(),s.getFlow_volume()));
     }

@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import com.api.beerdispenser.dto.DispenserDTO;
 import com.api.beerdispenser.entity.Dispenser;
 import com.api.beerdispenser.entity.Status;
+import com.api.beerdispenser.exception.BadRequest;
+import com.api.beerdispenser.exception.InternalServerError;
 import com.api.beerdispenser.repositories.BeerDispenserRepository;
 import org.slf4j.Marker;
 import org.springframework.http.HttpStatus;
@@ -24,15 +26,19 @@ public class DispensersServiceImpl {
     @Autowired
     private BeerDispenserRepository dispenserRepository;
 
-    public Dispenser createDispenser(DispenserDTO dispenser){
+    public Dispenser createDispenser(DispenserDTO dispenser) throws BadRequest,InternalServerError{
+        if(dispenser.flow_volume()==null){
+            throw new BadRequest("flow volume required");
+        }
+
         try {
             Dispenser newdispenser = new Dispenser();
             newdispenser.setFlow_volume(dispenser.flow_volume());
             return dispenserRepository.save(newdispenser);
 
         } catch (Exception e) {
-            log.error(Marker.ANY_MARKER, "Error {}",e);
-            throw new InternalError(e.getMessage());
+            log.error(Marker.ANY_MARKER, "Error ",e.getMessage());
+            throw new InternalServerError();
         }
     }
 
