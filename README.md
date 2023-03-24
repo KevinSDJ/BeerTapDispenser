@@ -1,17 +1,10 @@
 # Notes
 
-#### command to run test by profile , /mvnw spring-boot:run -Dspring-boot.run.profiles=prod
+#### command to run test by profile :
+- Production:  mvn spring-boot:run -Dspring-boot.run.profiles=prod
+- Development: mvn spring-boot:run -Dspring-boot.run.profiles=dev
+- Testing: mvn spring-boot:run -Dspring-boot.run.profiles=test
 
-
----
-
-* steps
-
-* [X] create dispenser
-* [X] change status open
-* [X] by change status create usage
-* [x] by create usage and  add the dispenser referer
-* [x] after change status closed
-* [x] find the last open usage
-* [x] update usage amount in this usage and set data now and save
-* [x] next if usage is the first crate a summary and set data or update summary if exists
+#### If you want to test the api from your computer without installing maven or java, you can use docker compose, yes at least have a docker installer, docker-compose
+- docker-compose up , to run the application with its dependencies
+- docker-compose down to run the application with its dependencies
