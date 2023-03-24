@@ -11,7 +11,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.scheduling.annotation.EnableAsync;
-import com.api.beerdispenser.entity.Summary;
+import com.api.beerdispenser.dto.summary.SummaryResponseDTO;
 import com.api.beerdispenser.services.impl.SummaryServiceImpl;
 
 @SpringBootTest
@@ -29,9 +29,8 @@ public class SummaryServiceTest {
         
         try{
             lock.await(2000, TimeUnit.MILLISECONDS);
-            Summary summary=summaryServiceImpl.getSummary(DispenserServiceTest.getValueTemp());
-            System.out.println(summary.toString());
-            assertEquals(summary!=null, true,"Expected summary not null");
+            SummaryResponseDTO summary=summaryServiceImpl.getSummary(DispenserServiceTest.getValueTemp());
+            assertEquals(summary.amount()!=null, true,"Expected summary not null");
         }catch(Exception ex){
             ex.printStackTrace();
             fail(ex.getMessage());

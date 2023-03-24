@@ -1,7 +1,12 @@
 package com.api.beerdispenser.services.impl;
 
+import com.api.beerdispenser.dto.summary.SummaryResponseDTO;
+import com.api.beerdispenser.dto.usage.UsageResponseDTO;
 import com.api.beerdispenser.entity.Dispenser;
 import com.api.beerdispenser.entity.Summary;
+import com.api.beerdispenser.exception.NotFound;
+
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 import org.slf4j.Logger;
@@ -21,13 +26,23 @@ public class SummaryServiceImpl {
     @Autowired
     private DispensersServiceImpl dispensersService;
 
-    public Summary getSummary(UUID id){
-
+    public SummaryResponseDTO getSummary(UUID id) throws NotFound{
+        Boolean existDispenser= dispensersService.exist(id);
+        if(!existDispenser)throw new NotFound("requested dispenser does not exist");
         Boolean exist= existSummary(id);
         
         Summary summ=exist?findAndUpdate(id):updateSummary(id);
+        Collection<UsageResponseDTO> usages= summ.getDispenser().getUsage()
+        .stream()
+        .map(e-> new UsageResponseDTO(
+            e.getOpen_at(), 
+            e.getClose_at(), 
+            e.getFlow_volume(),
+            e.getTotal_spent()))
+        .toList();
+        SummaryResponseDTO summary= new SummaryResponseDTO(summ.getTotal_amount(),usages);
        
-        return summ;
+        return summary;
     }
 
     public Summary updateSummary(UUID id){

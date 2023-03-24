@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.api.beerdispenser.dto.dispenser.ReqStatusDispenserDTO;
 import com.api.beerdispenser.dto.dispenser.RequestDispenserDTO;
 import com.api.beerdispenser.dto.dispenser.ResponseDispenserDTO;
+import com.api.beerdispenser.dto.summary.SummaryResponseDTO;
 import com.api.beerdispenser.entity.Dispenser;
-import com.api.beerdispenser.entity.Summary;
 import com.api.beerdispenser.services.impl.DispensersServiceImpl;
 import com.api.beerdispenser.services.impl.SummaryServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
@@ -62,8 +62,8 @@ public class DispenserEndpoint {
     }
     
     @GetMapping("/dispensers/{id}/spending")
-    public ResponseEntity<Summary> getSpending(@PathVariable(name = "id") UUID id) {
-        Summary summary = summaryServiceImpl.getSummary(id);
+    public ResponseEntity<SummaryResponseDTO> getSpending(@PathVariable(name = "id") UUID id) {
+        SummaryResponseDTO summary = summaryServiceImpl.getSummary(id);
 
         return ResponseEntity.ok(summary);
     }

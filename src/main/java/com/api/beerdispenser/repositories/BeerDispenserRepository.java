@@ -11,6 +11,7 @@ import com.api.beerdispenser.entity.Dispenser;
 @Repository
 public interface BeerDispenserRepository extends JpaRepository<Dispenser,UUID> {
     
-    @Query(value="SELECT EXISTS(SELECT d._id,d.status FROM Dispenser as d WHERE d._id =:id AND d.status='OPEN');",nativeQuery = true)
-    Boolean isOpen(@Param("id") UUID id);
+    @Query(value="SELECT EXISTS(SELECT d._id FROM Dispenser as d WHERE d._id =:id);",nativeQuery = true)
+    Boolean existDispenser(@Param("id") UUID id);
+    
 }

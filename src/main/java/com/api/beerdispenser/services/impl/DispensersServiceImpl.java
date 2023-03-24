@@ -13,6 +13,7 @@ import com.api.beerdispenser.dto.dispenser.ResponseDispenserDTO;
 import com.api.beerdispenser.entity.Dispenser;
 import com.api.beerdispenser.entity.Status;
 import com.api.beerdispenser.exception.BadRequest;
+import com.api.beerdispenser.exception.ConflictException;
 import com.api.beerdispenser.exception.InternalServerError;
 import com.api.beerdispenser.repositories.BeerDispenserRepository;
 import org.slf4j.Marker;
@@ -82,7 +83,7 @@ public class DispensersServiceImpl {
         if (dispenser==null)throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
         if(dispenser.getStatus().equals(status)){
-            throw new BadRequest("Dispenser already "+status);
+            throw new ConflictException("Dispenser already "+status);
         }
         dispenser.setStatus(Status.getValue(status));
         try{
@@ -93,9 +94,12 @@ public class DispensersServiceImpl {
 
         return dispenser!=null?
         dispenserRepository.save(dispenser)
-        :dispenserRepository.findById(id).get();
+        :dispenserRepository.findById(id).get();    
+    }
 
-         
+    public Boolean exist(UUID id){
+
+        return dispenserRepository.existDispenser(id);
     }
 
 }

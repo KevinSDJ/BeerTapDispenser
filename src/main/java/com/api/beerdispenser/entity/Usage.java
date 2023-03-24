@@ -3,7 +3,6 @@ package com.api.beerdispenser.entity;
 import java.io.Serializable;
 import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -15,7 +14,6 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name="usage")
-@Schema(hidden = false)
 public class Usage implements Serializable{
 
     @JsonIgnore
