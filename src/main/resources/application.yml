@@ -1,3 +1,78 @@
 spring:
    profiles:
-      default: dev        
+      active: dev    
+---
+spring:
+  config:
+     activate:
+        on-profile: dev
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: test
+    password: testpassw
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    open-in-view: true
+    database: h2
+server:
+  servlet:
+    context-path: /
+  error:
+    include-stacktrace: never
+springdoc:
+    api-docs:
+      enabled: true
+    swagger-ui:
+      enabled: true
+      path: /doc/swagger-ui.html
+---
+spring:
+  config:
+    activate:
+      on-profile: prod 
+  datasource:
+    url: jdbc:postgresql://localhost:5432/appdb
+    driver-class-name: org.postgresql.Driver
+    username: test
+    password: testpassw
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    open-in-view: false
+server:
+  port: 3000
+  servlet:
+    context-path: /
+  error:
+    include-stacktrace: never
+springdoc:
+    api-docs:
+      enabled: true
+    swagger-ui:
+      enabled: true
+      path: /doc/swagger-ui.html
+--- 
+spring:
+  config:
+    activate:
+      on-profile: test
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: test
+    password: testpassw
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    open-in-view: true
+    database: h2
+server:
+  servlet:
+    context-path: /
+  error:
+    include-stacktrace: never

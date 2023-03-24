@@ -12,7 +12,8 @@ services:
             - SPRING_DATASOURCE_USERNAME=test
             - SPRING_DATASOURCE_PASSWORD=testpassw
             - SPRING_JPA_HIBERNATE_DDL_AUTO=update
-            - SPRING_JPA_SHOW_SQL=true
+            - SPRING_JPA_SHOW_SQL=false
+            - SPRING_PROFILES_ACTIVE=prod
         ports:
             - "8080:8080"
 

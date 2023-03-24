@@ -17,6 +17,7 @@ import com.api.beerdispenser.entity.Dispenser;
 import com.api.beerdispenser.entity.Status;
 import com.api.beerdispenser.entity.Usage;
 import com.api.beerdispenser.exception.BadRequest;
+import com.api.beerdispenser.exception.ConflictException;
 import com.api.beerdispenser.services.impl.DispensersServiceImpl;
 
 @SpringBootTest
@@ -81,7 +82,7 @@ public class DispenserServiceTest {
         try{
             dispensersServiceImpl.updateState(id, "open");
             fail("Expected badRequest exception");
-        }catch(BadRequest ex){
+        }catch(ConflictException ex){
             assertEquals(ex.getMessage(), "Dispenser already open","Expected open not "+ex.getMessage());
         }
     

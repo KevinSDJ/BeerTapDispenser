@@ -14,9 +14,9 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import com.api.beerdispenser.dto.summary.SummaryResponseDTO;
 import com.api.beerdispenser.services.impl.SummaryServiceImpl;
 
+@EnableAsync
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@EnableAsync
 public class SummaryServiceTest {
 
     @Autowired
@@ -29,7 +29,9 @@ public class SummaryServiceTest {
         
         try{
             lock.await(2000, TimeUnit.MILLISECONDS);
+            System.out.println(DispenserServiceTest.getValueTemp());
             SummaryResponseDTO summary=summaryServiceImpl.getSummary(DispenserServiceTest.getValueTemp());
+            
             assertEquals(summary.amount()!=null, true,"Expected summary not null");
         }catch(Exception ex){
             ex.printStackTrace();
