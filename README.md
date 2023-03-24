@@ -10,3 +10,8 @@
 - docker-compose down  --rmi -v all to shutdown the application and clean all
 
 #### in any case if you have maven, java 19 and docker, use the bash script, (recommended only for linux users)
+
+---
+
+- base path : localhost:8080/beer-tap-dispenser/
+- documentation api : localhost:8080/doc/swagger-ui/index.html
