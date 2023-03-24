@@ -6,11 +6,10 @@ spring:
     password: testpassw
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
     show-sql: false
     open-in-view: true
     database: h2
-    
 server:
   servlet:
     context-path: /

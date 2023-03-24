@@ -3,7 +3,6 @@ package com.api.beerdispenser.entity;
 import java.io.Serializable;
 import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,8 +14,8 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Schema
 @Table(name="usage")
+@Schema(hidden = false)
 public class Usage implements Serializable{
 
     @JsonIgnore
@@ -30,7 +29,6 @@ public class Usage implements Serializable{
     @Column(nullable = false)
     private Double flow_volume;
     private Double total_spent=0.0;
-    @Hidden
     @JsonIgnore
 	@ManyToOne
     @JoinColumn(name="dispenser_id", nullable=false)

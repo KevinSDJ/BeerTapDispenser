@@ -2,11 +2,8 @@ package com.api.beerdispenser.entity;
 
 import java.io.Serializable;
 import java.util.Date;
-
 import org.hibernate.annotations.CreationTimestamp;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -17,7 +14,6 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name="summary")
-@Schema
 public class Summary implements Serializable{
 
     @JsonIgnore
