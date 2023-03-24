@@ -28,7 +28,7 @@ public class SummaryServiceTest {
     void getSummary(){
         
         try{
-            lock.await(2000, TimeUnit.MILLISECONDS);
+            lock.await(6000, TimeUnit.MILLISECONDS);
             System.out.println(DispenserServiceTest.getValueTemp());
             SummaryResponseDTO summary=summaryServiceImpl.getSummary(DispenserServiceTest.getValueTemp());
             

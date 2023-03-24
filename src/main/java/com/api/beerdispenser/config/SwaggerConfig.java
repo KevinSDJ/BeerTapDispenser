@@ -12,7 +12,7 @@ import io.swagger.v3.oas.annotations.servers.Server;
                 description ="""
                         A challenger from rviewer , to practice my skills with java , spring and sql
                         """,
-                contact = @Contact(name = "Kevin De jesus", url = "https://reflectoring.io", email = "sebadjkevin@gmail.com"),
+                contact = @Contact(name = "Email", email = "sebadjkevin@gmail.com"),
                 license = @License(name = "MIT Licence", url = "https://github.com/thombergs/code-examples/blob/master/LICENSE")),
         servers = @Server(url = "http://localhost:8080")
 )

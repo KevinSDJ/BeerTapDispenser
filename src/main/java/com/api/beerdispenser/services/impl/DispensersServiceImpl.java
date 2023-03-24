@@ -54,19 +54,10 @@ public class DispensersServiceImpl {
         }
     }
 
-    public Dispenser findById(UUID id) throws RuntimeException{
-        Optional<Dispenser> dispenser = null;
-        try {
-            dispenser = dispenserRepository.findById(id);
-        } catch (Exception e) {
-            log.error(Marker.ANY_MARKER, "Error {}",e);
-            throw new InternalServerError();
-        }
-        if (dispenser.isPresent()) {
-            return dispenser.get();
-        } else {
-            throw new NotFound("Requested dispenser does not exist");
-        }
+    public Optional<Dispenser> findById(UUID id){
+    
+        return dispenserRepository.findById(id);
+      
     }
 
     public Dispenser updateState(UUID id, String status) throws RuntimeException {
@@ -76,22 +67,24 @@ public class DispensersServiceImpl {
             throw new BadRequest("Bad indication,chose open/close");
         }
 
-        Dispenser dispenser = dispenserRepository.findById(id).get();
+        Optional<Dispenser> dispenser = dispenserRepository.findById(id);
 
-        if (dispenser==null)throw new NotFound("Requested dispenser does not exist");
+        if (dispenser.isEmpty()){
+            throw new NotFound("Requested dispenser does not exist");
+        };
 
-        if(dispenser.getStatus().equals(status)){
+        if(dispenser.get().getStatus().equals(status)){
             throw new ConflictException("Dispenser already "+status);
         }
-        dispenser.setStatus(Status.getValue(status));
+        dispenser.get().setStatus(Status.getValue(status));
         try{
-            dispenser= usageServiceImpl.updateUsage(dispenser);
+            dispenser= Optional.of(usageServiceImpl.updateUsage(dispenser.get()));
         }catch(Exception ex){
             log.error("Error: ", ex.getMessage());
         }
 
         return dispenser!=null?
-        dispenserRepository.save(dispenser)
+        dispenserRepository.save(dispenser.get())
         :dispenserRepository.findById(id).get();    
     }
 

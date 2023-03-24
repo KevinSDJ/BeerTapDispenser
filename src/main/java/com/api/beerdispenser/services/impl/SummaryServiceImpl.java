@@ -8,6 +8,7 @@ import com.api.beerdispenser.entity.Usage;
 import com.api.beerdispenser.exception.NotFound;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,13 +48,13 @@ public class SummaryServiceImpl {
 
     public Summary updateSummary(UUID id){
         Double total=0.0;
-        Dispenser dispenser= dispensersService.findById(id);
+        Optional<Dispenser> dispenser= dispensersService.findById(id);
         Summary newSummary = new Summary();
-        for(Usage usage:dispenser.getUsage()){
+        for(Usage usage:dispenser.get().getUsage()){
             total+=usage.getTotal_spent();
         }
         newSummary.setTotal_amount(total);
-        newSummary.setDispenser(dispenser);
+        newSummary.setDispenser(dispenser.get());
         return summaryRepository.save(newSummary);
     }
 

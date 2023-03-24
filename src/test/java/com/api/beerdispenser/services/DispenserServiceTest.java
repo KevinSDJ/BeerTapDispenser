@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -64,9 +65,9 @@ public class DispenserServiceTest {
     @Test
     @Order(4)
     void findByIdSuccess(){
-        Dispenser dispenser= dispensersServiceImpl.findById(id);
+        Optional<Dispenser> dispenser= dispensersServiceImpl.findById(id);
 
-        assertNotEquals(dispenser, null, "Expected not to be null");
+        assertNotEquals(dispenser.get(), null, "Expected not to be null");
         
     }
     @Test
@@ -91,8 +92,8 @@ public class DispenserServiceTest {
     @Test
     @Order(7)
     void checkUsageExist(){
-        Dispenser dispenser= dispensersServiceImpl.findById(id);
-        assertEquals(1, dispenser.getUsage().size(),"Excepted 1 usage not "+ dispenser.getUsage().size());
+        Optional<Dispenser> dispenser= dispensersServiceImpl.findById(id);
+        assertEquals(1, dispenser.get().getUsage().size(),"Excepted 1 usage not "+ dispenser.get().getUsage().size());
     }
 
     @Test
@@ -107,8 +108,8 @@ public class DispenserServiceTest {
     @Order(9)
     void checkClosedUsage(){
         
-        Dispenser dispenser = dispensersServiceImpl.findById(id);
-        Usage usage= dispenser.getUsage().stream().findFirst().get();
+        Optional<Dispenser> dispenser = dispensersServiceImpl.findById(id);
+        Usage usage= dispenser.get().getUsage().stream().findFirst().get();
         
         assertEquals(true, usage!=null && usage.getClose_at()!=null,"Expected true usage exist and closed correctly");
         
