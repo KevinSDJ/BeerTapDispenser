@@ -4,8 +4,8 @@ import com.api.beerdispenser.dto.summary.SummaryResponseDTO;
 import com.api.beerdispenser.dto.usage.UsageResponseDTO;
 import com.api.beerdispenser.entity.Dispenser;
 import com.api.beerdispenser.entity.Summary;
+import com.api.beerdispenser.entity.Usage;
 import com.api.beerdispenser.exception.NotFound;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -26,9 +26,9 @@ public class SummaryServiceImpl {
     @Autowired
     private DispensersServiceImpl dispensersService;
 
-    public SummaryResponseDTO getSummary(UUID id) throws NotFound{
+    public SummaryResponseDTO getSummary(UUID id) throws RuntimeException{
         Boolean existDispenser= dispensersService.exist(id);
-        if(!existDispenser)throw new NotFound("requested dispenser does not exist");
+        if(!existDispenser)throw new NotFound("Requested dispenser does not exist");
         Boolean exist= existSummary(id);
         
         Summary summ=exist?findAndUpdate(id):updateSummary(id);
@@ -49,9 +49,9 @@ public class SummaryServiceImpl {
         Double total=0.0;
         Dispenser dispenser= dispensersService.findById(id);
         Summary newSummary = new Summary();
-        total=dispenser.getUsage().stream()
-            .map(e->e.getTotal_spent())
-            .reduce((acc,number)->{ return acc+ number;}).get();
+        for(Usage usage:dispenser.getUsage()){
+            total+=usage.getTotal_spent();
+        }
         newSummary.setTotal_amount(total);
         newSummary.setDispenser(dispenser);
         return summaryRepository.save(newSummary);
@@ -65,9 +65,9 @@ public class SummaryServiceImpl {
         Double total=0.0;
         try{
             Summary summary=summaryRepository.findByDispenserId(id);
-            total=summary.getDispenser().getUsage().stream()
-            .map(e->e.getTotal_spent())
-            .reduce((acc,number)->{ return acc+ number;}).get();
+            for(Usage usage:summary.getDispenser().getUsage()){
+                total+=usage.getTotal_spent();
+            }
             summary.setTotal_amount(total);
             return summaryRepository.save(summary);
         }catch(Exception e){

@@ -15,11 +15,9 @@ import com.api.beerdispenser.entity.Status;
 import com.api.beerdispenser.exception.BadRequest;
 import com.api.beerdispenser.exception.ConflictException;
 import com.api.beerdispenser.exception.InternalServerError;
+import com.api.beerdispenser.exception.NotFound;
 import com.api.beerdispenser.repositories.BeerDispenserRepository;
 import org.slf4j.Marker;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
-import org.webjars.NotFoundException;
 
 @Service
 public class DispensersServiceImpl {
@@ -30,7 +28,7 @@ public class DispensersServiceImpl {
     @Autowired
     private UsageServiceImpl usageServiceImpl;
 
-    public Dispenser create(RequestDispenserDTO dispenser) throws BadRequest,InternalServerError{
+    public Dispenser create(RequestDispenserDTO dispenser)throws RuntimeException{
         if(dispenser.flow_volume()==null){
             throw new BadRequest("flow volume price required");
         }
@@ -45,14 +43,14 @@ public class DispensersServiceImpl {
         }
     }
 
-    public List<ResponseDispenserDTO> getAll(){
+    public List<ResponseDispenserDTO> getAll() throws RuntimeException{
         try {
             return dispenserRepository.findAll()
             .stream()
             .map(d->new ResponseDispenserDTO(d.get_id(),d.getFlow_volume())).collect(Collectors.toList());
         } catch (Exception e) {
             log.error(Marker.ANY_MARKER, "Error {}",e);
-            throw new InternalError(e.getMessage());
+            throw new InternalServerError();
         }
     }
 
@@ -62,12 +60,12 @@ public class DispensersServiceImpl {
             dispenser = dispenserRepository.findById(id);
         } catch (Exception e) {
             log.error(Marker.ANY_MARKER, "Error {}",e);
-            throw new InternalError(e.getMessage());
+            throw new InternalServerError();
         }
         if (dispenser.isPresent()) {
             return dispenser.get();
         } else {
-            throw new NotFoundException("this dispenser not exist");
+            throw new NotFound("Requested dispenser does not exist");
         }
     }
 
@@ -75,12 +73,12 @@ public class DispensersServiceImpl {
 
         Boolean isValidStatus= Status.containValue(status);
         if(!isValidStatus){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Bad indication,chose open/close");
+            throw new BadRequest("Bad indication,chose open/close");
         }
 
         Dispenser dispenser = dispenserRepository.findById(id).get();
 
-        if (dispenser==null)throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        if (dispenser==null)throw new NotFound("Requested dispenser does not exist");
 
         if(dispenser.getStatus().equals(status)){
             throw new ConflictException("Dispenser already "+status);

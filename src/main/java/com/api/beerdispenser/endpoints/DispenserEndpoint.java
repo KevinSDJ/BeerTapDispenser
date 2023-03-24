@@ -42,25 +42,33 @@ public class DispenserEndpoint {
          })
     @PostMapping("/dispensers")
     public ResponseEntity<ResponseDispenserDTO> newDispenser(@RequestBody RequestDispenserDTO dispenser)
-            throws Exception {
+            {
         Dispenser s = dispensersServiceImpl.create(dispenser);
         return ResponseEntity.ok(new ResponseDispenserDTO(s.get_id(), s.getFlow_volume()));
     }
 
     @Operation(summary = "Update state and usage")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Dispenser created", content = {
+            @ApiResponse(responseCode = "202", description = "Status of the tap changed correctly", content = {
                     @Content(mediaType = "application/json",schema = @Schema(implementation =ReqStatusDispenserDTO.class )) }),
-            @ApiResponse(responseCode = "400", description = "already open or close", content = @Content),
-            @ApiResponse(responseCode = "500", description = "internal error", content = @Content)
+            @ApiResponse(responseCode = "404", description = "Requested dispenser does not exist", content = @Content),
+            @ApiResponse(responseCode = "409", description = "Dispenser is already opened/closed", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Unexpected API error", content = @Content)
          })
     @PutMapping("/dispensers/{id}/status")
     public ResponseEntity<String> generateUsageDispenser(@PathVariable(name = "id") UUID id,
-            @RequestBody ReqStatusDispenserDTO status) throws Exception {
+            @RequestBody ReqStatusDispenserDTO status) {
         dispensersServiceImpl.updateState(id, status.status());
         return ResponseEntity.status(202).build();
     }
     
+    @Operation(summary = "See summary of uses of the dispenser")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Total amount spent by the dispenser", content = {
+                    @Content(mediaType = "application/json",schema = @Schema(implementation =SummaryResponseDTO.class )) }),
+            @ApiResponse(responseCode = "404", description = "Requested dispenser does not exist", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Unexpected API error", content = @Content)
+         })
     @GetMapping("/dispensers/{id}/spending")
     public ResponseEntity<SummaryResponseDTO> getSpending(@PathVariable(name = "id") UUID id) {
         SummaryResponseDTO summary = summaryServiceImpl.getSummary(id);
