@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
@@ -14,12 +15,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import com.api.beerdispenser.dto.dispenser.RequestDispenserDTO;
 import com.api.beerdispenser.dto.dispenser.ResponseDispenserDTO;
+import com.api.beerdispenser.dto.summary.SummaryResponseDTO;
 import com.api.beerdispenser.entity.Dispenser;
 import com.api.beerdispenser.entity.Status;
 import com.api.beerdispenser.entity.Usage;
 import com.api.beerdispenser.exception.BadRequest;
 import com.api.beerdispenser.exception.ConflictException;
 import com.api.beerdispenser.services.impl.DispensersServiceImpl;
+import com.api.beerdispenser.services.impl.SummaryServiceImpl;
 
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -117,6 +120,23 @@ public class DispenserServiceTest {
 
     public static UUID getValueTemp(){
         return id;
+    }
+
+    @Nested
+    class SummaryServiceTest {
+
+        @Autowired
+        private SummaryServiceImpl summaryServiceImpl;
+        
+        @Test
+        void getSummary(){
+            System.out.println(DispenserServiceTest.getValueTemp());
+            SummaryResponseDTO summary=summaryServiceImpl.getSummary(DispenserServiceTest.getValueTemp());
+             
+            assertEquals(summary.amount()!=null, true,"Expected summary not null");
+            
+           
+        }
     }
 
     
